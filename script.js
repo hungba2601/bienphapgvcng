@@ -12,6 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Kiểm tra trạng thái đã đăng nhập chưa
     if (localStorage.getItem('isLoggedIn') === 'true') {
+        const savedUser = localStorage.getItem('username') || 'Thành viên';
+        const displayUser = document.getElementById('display-username');
+        if (displayUser) displayUser.textContent = savedUser;
+
         loginOverlay.style.display = 'none';
         appContainer.style.display = 'flex';
     }
@@ -50,6 +54,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem('isLoggedIn', 'true');
                 localStorage.setItem('username', user);
 
+                const displayUser = document.getElementById('display-username');
+                if (displayUser) displayUser.textContent = user;
+
                 setTimeout(() => {
                     loginOverlay.style.opacity = '0';
                     setTimeout(() => {
@@ -84,6 +91,16 @@ document.addEventListener('DOMContentLoaded', () => {
         input?.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') handleLogin();
         });
+    });
+
+    // LOGOUT LOGIC
+    const logoutBtn = document.getElementById('logout-btn');
+    logoutBtn?.addEventListener('click', () => {
+        if (confirm('Bạn có chắc chắn muốn đăng xuất không?')) {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('username');
+            location.reload();
+        }
     });
 
     // Selectors
