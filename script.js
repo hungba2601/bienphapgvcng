@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginMessage = document.getElementById('login-message');
 
     // Link script.google.com của bạn (Phải cập nhật link này sau khi triển khai Apps Script)
-    const SHEETS_API_URL = "https://script.google.com/macros/s/AKfycby-PLACEHOLDER/exec";
+    const SHEETS_API_URL = "https://script.google.com/macros/s/AKfycbzmZsB6Lnbc7kZjddMi6Gu5-Snn31LhmlcklFOtrl73ofXfjGrfoJUrTtGzb8t8ZF7c/exec";
 
     // Kiểm tra trạng thái đã đăng nhập chưa
     if (localStorage.getItem('isLoggedIn') === 'true') {
