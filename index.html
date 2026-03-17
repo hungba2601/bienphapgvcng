@@ -137,7 +137,6 @@
                 <div class="card">
                     <div class="card-header">
                         <h2>1. THÔNG TIN BẮT BUỘC</h2>
-                        <button class="ai-btn"><i class="fas fa-robot"></i> Đề xuất tên đề tài (AI)</button>
                     </div>
 
                     <form id="info-form" class="app-form">
@@ -150,17 +149,6 @@
                                 <input type="radio" name="teacher_role" value="GVCNG">
                                 <span class="role-text">GV Chủ nhiệm giỏi (GVCNG)</span>
                             </label>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group full-width">
-                                <label>Tên đề tài Biện pháp <span class="required">*</span></label>
-                                <div class="input-with-action">
-                                    <input type="text" id="topic-title"
-                                        placeholder="VD: 'Ứng dụng AI để nâng cao hiệu quả dạy học môn Toán...'">
-                                    <input type="text" class="pp-select" placeholder="Phương pháp dạy học (Tùy chọn)">
-                                </div>
-                            </div>
                         </div>
 
                         <div class="form-row">
@@ -181,6 +169,20 @@
                             <div class="form-group quarter">
                                 <label>Khối lớp</label>
                                 <input type="text" id="class-name" placeholder="VD: Lớp 12, Khối 6-9">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group full-width">
+                                <label>Tên đề tài Biện pháp <span class="required">*</span></label>
+                                <div class="input-with-action">
+                                    <input type="text" id="topic-title"
+                                        placeholder="VD: 'Ứng dụng AI để nâng cao hiệu quả dạy học môn Toán...'">
+                                    <button type="button" id="suggest-topic-btn" class="ai-btn topic-gen-btn">
+                                        <i class="fas fa-robot"></i> Đề xuất AI
+                                    </button>
+                                    <input type="text" class="pp-select" placeholder="Phương pháp dạy học (Tùy chọn)">
+                                </div>
                             </div>
                         </div>
 
@@ -553,7 +555,8 @@
                         <p style="color: #718096; line-height: 1.6;">Bạn có thể cho AI viết hết toàn bộ bằng nút
                             <strong>"VIẾT TOÀN BỘ (AI)"</strong>. Hoặc tại mỗi phần, bạn có thể tự soạn, hoặc tự nhập
                             gợi ý rồi nhấn nút <strong>"Viết theo gợi ý (AI)"</strong> để app viết, hoặc nhấn
-                            <strong>"Viết tự động (AI)"</strong> để AI tự viết.</p>
+                            <strong>"Viết tự động (AI)"</strong> để AI tự viết.
+                        </p>
                     </div>
                 </div>
                 <div style="display: flex; gap: 1.5rem;">

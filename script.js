@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const navItems = document.querySelectorAll('.nav-item');
     const sections = document.querySelectorAll('.content-section');
     const infoForm = document.getElementById('info-form');
-    const aiSuggestBtn = document.querySelector('.ai-btn');
+    const aiSuggestBtn = document.getElementById('suggest-topic-btn');
     const tabButtons = document.querySelectorAll('.tab-btn');
     const sidebar = document.querySelector('.sidebar');
 
@@ -541,6 +541,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // AI Suggestion for Topic Title
     aiSuggestBtn?.addEventListener('click', async () => {
         const topicInput = document.getElementById('topic-title');
         const roleText = getRoleText();

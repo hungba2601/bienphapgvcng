@@ -400,6 +400,21 @@ select:focus {
     width: 250px;
 }
 
+.topic-gen-btn {
+    border-radius: 12px !important;
+    white-space: nowrap;
+    min-width: 140px;
+    background: #f5f3ff !important;
+    color: #7c3aed !important;
+    border: 1.5px dashed #c4b5fd !important;
+}
+
+.topic-gen-btn:hover {
+    background: #7c3aed !important;
+    color: #fff !important;
+    border-style: solid !important;
+}
+
 .analyze-btn {
     background: #6c757d;
     color: #fff;
