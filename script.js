@@ -30,9 +30,20 @@ document.addEventListener('DOMContentLoaded', () => {
         showLoginMessage('Đang kết nối hệ thống...', '');
 
         try {
-            // Sử dụng tham số login cho Apps Script
             const response = await fetch(`${SHEETS_API_URL}?action=login&user=${encodeURIComponent(user)}&pass=${encodeURIComponent(pass)}`);
-            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error('Server trả về lỗi: ' + response.status);
+            }
+
+            const text = await response.text();
+            let result;
+            try {
+                result = JSON.parse(text);
+            } catch (e) {
+                console.error("Phản hồi không phải JSON:", text);
+                throw new Error('Dữ liệu từ Google Sheet không đúng định dạng. Hãy kiểm tra lại URL hoặc mã Script.');
+            }
 
             if (result.status === 'success') {
                 showLoginMessage('Đăng nhập thành công! Đang vào hệ thống...', 'success');
@@ -48,17 +59,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     }, 500);
                 }, 1000);
             } else {
-                showLoginMessage('Tài khoản hoặc mật khẩu không đúng', 'error');
+                showLoginMessage(result.message || 'Tài khoản hoặc mật khẩu không đúng', 'error');
                 loginBtn.disabled = false;
                 loginBtn.innerHTML = '<span>ĐĂNG NHẬP NGAY</span><i class="fas fa-sign-in-alt"></i>';
             }
         } catch (error) {
             console.error("Login Error:", error);
-            // Link demo nếu chưa có API thật hoặc lỗi kết nối, bạn có thể tạm thời cho đăng nhập (Chỉ dùng để test UI)
-            // showLoginMessage('Lỗi kết nối Server! Vui lòng thử lại sau.', 'error');
-
-            // TRÊN THỰC TẾ: Nếu user chưa cấu hình URL, ta có thể thông báo
-            showLoginMessage('Chưa cấu hình URL Google Sheets! Vui lòng kiểm tra script.js', 'error');
+            showLoginMessage('Lỗi hệ thống: ' + error.message + '. (Hãy chắc chắn chọn "Anyone" khi Deploy bản mới nhất)', 'error');
             loginBtn.disabled = false;
             loginBtn.innerHTML = '<span>ĐĂNG NHẬP NGAY</span><i class="fas fa-sign-in-alt"></i>';
         }
