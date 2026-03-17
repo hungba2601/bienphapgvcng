@@ -103,6 +103,28 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // GUIDE MODAL LOGIC
+    const guideModal = document.getElementById('guide-modal');
+    const openGuideBtn = document.getElementById('open-guide-btn');
+    const closeGuideBtns = document.querySelectorAll('.close-guide-modal');
+
+    openGuideBtn?.addEventListener('click', () => {
+        guideModal.style.display = 'flex';
+    });
+
+    closeGuideBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            guideModal.style.display = 'none';
+        });
+    });
+
+    // Close modal when clicking outside
+    window.addEventListener('click', (e) => {
+        if (e.target === guideModal) {
+            guideModal.style.display = 'none';
+        }
+    });
+
     // Selectors
     const navItems = document.querySelectorAll('.nav-item');
     const sections = document.querySelectorAll('.content-section');

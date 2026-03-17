@@ -653,9 +653,32 @@ select:focus {
 
 .api-config-btn:hover {
     background: #0369a1;
-    /* Hover đậm hơn */
     transform: translateY(-1px);
     box-shadow: 0 6px 15px rgba(2, 132, 199, 0.2);
+}
+
+.guide-btn {
+    width: 100%;
+    margin-top: 10px;
+    padding: 0.8rem;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    color: #475569;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: var(--transition);
+}
+
+.guide-btn:hover {
+    background: #f8fafc;
+    border-color: #cbd5e0;
+    color: var(--primary-color);
 }
 
 .copyright {
