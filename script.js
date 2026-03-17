@@ -1,4 +1,84 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // LOGIN LOGIC
+    const loginOverlay = document.getElementById('login-overlay');
+    const appContainer = document.querySelector('.app-container');
+    const loginBtn = document.getElementById('login-btn');
+    const loginUsernameInput = document.getElementById('login-username');
+    const loginPasswordInput = document.getElementById('login-password');
+    const loginMessage = document.getElementById('login-message');
+
+    // Link script.google.com của bạn (Phải cập nhật link này sau khi triển khai Apps Script)
+    const SHEETS_API_URL = "https://script.google.com/macros/s/AKfycby-PLACEHOLDER/exec";
+
+    // Kiểm tra trạng thái đã đăng nhập chưa
+    if (localStorage.getItem('isLoggedIn') === 'true') {
+        loginOverlay.style.display = 'none';
+        appContainer.style.display = 'flex';
+    }
+
+    async function handleLogin() {
+        const user = loginUsernameInput.value.trim();
+        const pass = loginPasswordInput.value.trim();
+
+        if (!user || !pass) {
+            showLoginMessage('Vui lòng nhập đầy đủ thông tin!', 'error');
+            return;
+        }
+
+        loginBtn.disabled = true;
+        loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xác thực...';
+        showLoginMessage('Đang kết nối hệ thống...', '');
+
+        try {
+            // Sử dụng tham số login cho Apps Script
+            const response = await fetch(`${SHEETS_API_URL}?action=login&user=${encodeURIComponent(user)}&pass=${encodeURIComponent(pass)}`);
+            const result = await response.json();
+
+            if (result.status === 'success') {
+                showLoginMessage('Đăng nhập thành công! Đang vào hệ thống...', 'success');
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('username', user);
+
+                setTimeout(() => {
+                    loginOverlay.style.opacity = '0';
+                    setTimeout(() => {
+                        loginOverlay.style.display = 'none';
+                        appContainer.style.display = 'flex';
+                        appContainer.style.opacity = '1';
+                    }, 500);
+                }, 1000);
+            } else {
+                showLoginMessage('Tài khoản hoặc mật khẩu không đúng', 'error');
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = '<span>ĐĂNG NHẬP NGAY</span><i class="fas fa-sign-in-alt"></i>';
+            }
+        } catch (error) {
+            console.error("Login Error:", error);
+            // Link demo nếu chưa có API thật hoặc lỗi kết nối, bạn có thể tạm thời cho đăng nhập (Chỉ dùng để test UI)
+            // showLoginMessage('Lỗi kết nối Server! Vui lòng thử lại sau.', 'error');
+
+            // TRÊN THỰC TẾ: Nếu user chưa cấu hình URL, ta có thể thông báo
+            showLoginMessage('Chưa cấu hình URL Google Sheets! Vui lòng kiểm tra script.js', 'error');
+            loginBtn.disabled = false;
+            loginBtn.innerHTML = '<span>ĐĂNG NHẬP NGAY</span><i class="fas fa-sign-in-alt"></i>';
+        }
+    }
+
+    function showLoginMessage(text, type) {
+        loginMessage.textContent = text;
+        loginMessage.className = 'login-message ' + type;
+        loginMessage.style.display = text ? 'block' : 'none';
+    }
+
+    loginBtn?.addEventListener('click', handleLogin);
+
+    // Đăng nhập bằng phím Enter
+    [loginUsernameInput, loginPasswordInput].forEach(input => {
+        input?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleLogin();
+        });
+    });
+
     // Selectors
     const navItems = document.querySelectorAll('.nav-item');
     const sections = document.querySelectorAll('.content-section');
