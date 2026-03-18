@@ -257,11 +257,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function getDocType() {
-        // Nếu đang ở Tab Thẩm định mới lấy theo lựa chọn, còn Tab 1 mặc định là BIỆN PHÁP
-        const appraisalSection = document.getElementById('appraisal-section');
-        if (appraisalSection && appraisalSection.classList.contains('active')) {
+        // Kiểm tra xem Tab "THẨM ĐỊNH" có đang active hay không
+        const activeTab = document.querySelector('.tab-btn.active');
+        if (activeTab && activeTab.innerText.includes('THẨM ĐỊNH')) {
             return document.querySelector('input[name="appraisal_type"]:checked')?.value || "BIỆN PHÁP";
         }
+        // Nếu ở Tab "VIẾT MỚI", mặc định luôn là BIỆN PHÁP
         return "BIỆN PHÁP";
     }
 
