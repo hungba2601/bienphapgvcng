@@ -61,37 +61,75 @@
                     <div class="nav-title">Thông tin</div>
                     <div class="nav-desc">Thiết lập thông tin cơ bản</div>
                 </li>
-                <li class="nav-item" data-section="outline">
+                <li class="nav-item bp-nav" data-section="outline">
                     <div class="nav-title">Lập dàn ý</div>
                     <div class="nav-desc">Xây dựng khung sườn biện pháp</div>
                 </li>
-                <li class="nav-item" data-section="section1">
+                <li class="nav-item bp-nav" data-section="section1">
                     <div class="nav-title">1. Đặt vấn đề</div>
                     <div class="nav-desc">1.1 Lí do, 1.2 Mục đích, 1.3 Đối tượng</div>
                 </li>
-                <li class="nav-item" data-section="section2">
+                <li class="nav-item bp-nav" data-section="section2">
                     <div class="nav-title">2. Thực trạng vấn đề</div>
                     <div class="nav-desc">2.1 Cơ sở lý luận, 2.2 Cơ sở thực tiễn</div>
                 </li>
-                <li class="nav-item" data-section="solution1">
+                <li class="nav-item bp-nav" data-section="solution1">
                     <div class="nav-title">2.3. Giải pháp 1</div>
                     <div class="nav-desc">Nội dung giải pháp thứ nhất</div>
                 </li>
-                <li class="nav-item" data-section="solution2">
+                <li class="nav-item bp-nav" data-section="solution2">
                     <div class="nav-title">2.3. Giải pháp 2</div>
                     <div class="nav-desc">Nội dung giải pháp thứ hai</div>
                 </li>
-                <li class="nav-item" data-section="solution3">
+                <li class="nav-item bp-nav" data-section="solution3">
                     <div class="nav-title">2.3. Giải pháp 3</div>
                     <div class="nav-desc">Nội dung giải pháp thứ ba</div>
                 </li>
-                <li class="nav-item" data-section="creativity">
+                <li class="nav-item bp-nav" data-section="creativity">
                     <div class="nav-title">2.4. Tính mới, sáng tạo</div>
                     <div class="nav-desc">2.4.1 Tính mới, 2.4.2 Tính sáng tạo</div>
                 </li>
-                <li class="nav-item" data-section="impact">
+                <li class="nav-item bp-nav" data-section="impact">
                     <div class="nav-title">3. Kết luận</div>
                     <div class="nav-desc">3.1 Khả năng, 3.2 Hiệu quả</div>
+                </li>
+
+                <!-- SKKN Navigation (6 Correct Sections) -->
+                <li class="nav-item skkn-nav" data-section="section1" style="display: none;">
+                    <div class="nav-title">PHẦN I: ĐẶT VẤN ĐỀ</div>
+                    <div class="nav-desc">1.1 Lý do, 1.2 Mục đích, phương pháp...</div>
+                </li>
+                <li class="nav-item skkn-nav" data-section="theory" style="display: none;">
+                    <div class="nav-title">PHẦN II: NỘI DUNG (2.1)</div>
+                    <div class="nav-desc">2.1 Cơ sở lý luận/khoa học</div>
+                </li>
+                <li class="nav-item skkn-nav" data-section="section2" style="display: none;">
+                    <div class="nav-title">PHẦN II: NỘI DUNG (2.2)</div>
+                    <div class="nav-desc">2.2 Thực trạng & số liệu minh chứng</div>
+                </li>
+                <li class="nav-item skkn-nav" data-section="solution1" style="display: none;">
+                    <div class="nav-title">PHẦN II: NỘI DUNG (2.3)</div>
+                    <div class="nav-desc">2.3 Giải pháp thực hiện (4.1)</div>
+                </li>
+                <li class="nav-item skkn-nav" data-section="solution2" style="display: none;">
+                    <div class="nav-title">PHẦN II: NỘI DUNG (2.3)</div>
+                    <div class="nav-desc">2.3 Giải pháp thực hiện (4.2)</div>
+                </li>
+                <li class="nav-item skkn-nav" data-section="solution3" style="display: none;">
+                    <div class="nav-title">PHẦN II: NỘI DUNG (2.3)</div>
+                    <div class="nav-desc">2.3 Giải pháp thực hiện (4.3)</div>
+                </li>
+                <li class="nav-item skkn-nav" data-section="creativity" style="display: none;">
+                    <div class="nav-title">PHẦN II: NỘI DUNG (2.4)</div>
+                    <div class="nav-desc">2.4 Hiệu quả SKKN (So sánh)</div>
+                </li>
+                <li class="nav-item skkn-nav" data-section="impact" style="display: none;">
+                    <div class="nav-title">PHẦN III: KẾT LUẬN & KN</div>
+                    <div class="nav-desc">3.1 Tóm tắt, 3.2 Kiến nghị</div>
+                </li>
+                <li class="nav-item skkn-nav" data-section="appendix" style="display: none;">
+                    <div class="nav-title">PHỤ LỤC</div>
+                    <div class="nav-desc">Minh chứng & tham khảo</div>
                 </li>
             </ul>
         </nav>
@@ -113,8 +151,10 @@
     <main class="main-content">
         <header class="top-header">
             <div class="tab-switcher">
-                <button class="tab-btn active"><i class="fas fa-edit"></i> VIẾT BIỆN PHÁP MỚI</button>
-                <button class="tab-btn"><i class="fas fa-search-plus"></i> THẨM ĐỊNH BIỆN PHÁP + SKKN</button>
+                <button class="tab-btn active" data-mode="biên-pháp"><i class="fas fa-edit"></i> VIẾT BIỆN PHÁP
+                    MỚI</button>
+                <button class="tab-btn" data-mode="skkn"><i class="fas fa-lightbulb"></i> VIẾT SKKN MỚI</button>
+                <button class="tab-btn" data-mode="thẩm-định"><i class="fas fa-search-plus"></i> THẨM ĐỊNH</button>
             </div>
             <div class="user-profile">
                 <div class="user-info">
@@ -142,7 +182,7 @@
                     </div>
 
                     <form id="info-form" class="app-form">
-                        <div class="role-selector">
+                        <div class="role-selector" id="main-role-selector">
                             <label class="role-option">
                                 <input type="radio" name="teacher_role" value="GVG" checked>
                                 <span class="role-text">Giáo viên giỏi (GVG)</span>
@@ -178,7 +218,7 @@
 
                         <div class="form-row">
                             <div class="form-group full-width">
-                                <label>Tên đề tài Biện pháp <span class="required">*</span></label>
+                                <label id="topic-label">Tên đề tài Biện pháp <span class="required">*</span></label>
                                 <div class="input-with-action">
                                     <input type="text" id="topic-title"
                                         placeholder="VD: 'Ứng dụng AI để nâng cao hiệu quả dạy học môn Toán...'">
@@ -202,11 +242,16 @@
                         </div>
 
                         <div class="form-row">
-                            <div class="form-group full-width">
+                            <div class="form-group half">
                                 <label>Thời gian thực hiện (Từ tháng... đến tháng...) <span
                                         class="required">*</span></label>
                                 <input type="text" id="execution-time"
                                     placeholder="VD: Từ tháng 9/2023 đến tháng 5/2024">
+                            </div>
+                            <div class="form-group half">
+                                <label>Số trang báo cáo mong muốn (Tùy chọn, ví dụ: 15-20)</label>
+                                <input type="text" id="upgrade-page-limit"
+                                    placeholder="Nếu để trống AI sẽ tự do viết chuyên sâu như một chuyên gia" value="">
                             </div>
                         </div>
 
@@ -228,11 +273,11 @@
                     <div class="card-header">
                         <h2>2. DÀN Ý ĐỀ XUẤT (AI)</h2>
                         <div class="header-actions">
-                            <button class="ai-btn write-all-btn"><i class="fas fa-magic"></i> VIẾT TOÀN BỘ
+                            <button type="button" class="ai-btn write-all-btn"><i class="fas fa-magic"></i> VIẾT TOÀN BỘ
                                 (AI)</button>
                         </div>
                     </div>
-                    <div class="outline-container">
+                    <div class="outline-container" id="bp-outline-container">
                         <div class="outline-item">
                             <div class="item-number">1</div>
                             <div class="item-content">
@@ -267,9 +312,79 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- SKKN Outline Container -->
+                    <div class="outline-container" id="skkn-outline-container" style="display: none;">
+                        <div class="outline-item">
+                            <div class="item-number">I</div>
+                            <div class="item-content">
+                                <h3>PHẦN I: ĐẶT VẤN ĐỀ (MỞ ĐẦU)</h3>
+                                <ul>
+                                    <li>1.1. Lý do chọn đề tài (Tính cấp thiết)</li>
+                                    <li>1.2. Mục đích, Đối tượng, Phạm vi & Phương pháp nghiên cứu</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="outline-item">
+                            <div class="item-number">II</div>
+                            <div class="item-content">
+                                <h3>PHẦN II: GIẢI QUYẾT VẤN ĐỀ (NỘI DUNG)</h3>
+                                <ul>
+                                    <li>2.1. Cơ sở lý luận/khoa học (Nêu lý thuyết liên quan)</li>
+                                    <li>2.2. Thực trạng vấn đề (Thuận lợi/Khó khăn/Số liệu minh chứng)</li>
+                                    <li>2.3. Các biện pháp/giải pháp thực hiện mới, sáng tạo</li>
+                                    <li>2.4. Hiệu quả của SKKN (So sánh kết quả sau áp dụng)</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="outline-item">
+                            <div class="item-number">III</div>
+                            <div class="item-content">
+                                <h3>PHẦN III: KẾT LUẬN VÀ KIẾN NGHỊ</h3>
+                                <ul>
+                                    <li>3.1. Tóm tắt kết quả chính và bài học kinh nghiệm</li>
+                                    <li>3.2. Kiến nghị, đề xuất hướng phát triển tiếp theo</li>
+                                    <li>- Phụ lục: Danh mục tham khảo & Hình ảnh minh chứng</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                     <div class="form-actions">
-                        <button class="secondary-btn prev-btn"><i class="fas fa-arrow-left"></i> QUAY LẠI</button>
-                        <button class="primary-btn next-btn">TIẾP THEO <i class="fas fa-arrow-right"></i></button>
+                        <button type="button" class="secondary-btn prev-btn"><i class="fas fa-arrow-left"></i> QUAY
+                            LẠI</button>
+                        <button type="button" class="primary-btn next-btn">TIẾP THEO <i
+                                class="fas fa-arrow-right"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section: Theory (Base Logic) - NEW for SKKN -->
+            <div id="theory-section" class="content-section">
+                <div class="section-hero">
+                    <h1>PHẦN II: CƠ SỞ LÝ LUẬN</h1>
+                    <p>Trình bày cơ sở pháp lý và lý luận khoa học của đề tài</p>
+                </div>
+                <div class="card">
+                    <div class="card-header ai-header-group">
+                        <h2>PHẦN II: Cơ sở lý luận</h2>
+                        <div class="ai-controls">
+                            <input type="text" class="ai-prompt-input"
+                                placeholder="Nhập bối cảnh lý luận riêng (tùy chọn)...">
+                            <button type="button" class="ai-btn write-with-prompt-btn"><i class="fas fa-pen-nib"></i>
+                                Viết theo
+                                gợi ý (AI)</button>
+                            <button type="button" class="ai-btn auto-write"><i class="fas fa-magic"></i> Viết tự động
+                                (AI)</button>
+                        </div>
+                    </div>
+                    <div class="editor-area" contenteditable="true" data-id="theory"
+                        placeholder="Hãy nhập nội dung Cơ sở lý luận vào đây nếu không muốn AI viết tự động"></div>
+
+                    <div class="form-actions">
+                        <button type="button" class="secondary-btn prev-btn"><i class="fas fa-arrow-left"></i> QUAY
+                            LẠI</button>
+                        <button type="button" class="primary-btn next-btn">TIẾP THEO <i
+                                class="fas fa-arrow-right"></i></button>
                     </div>
                 </div>
             </div>
@@ -286,9 +401,10 @@
                         <div class="ai-controls">
                             <input type="text" class="ai-prompt-input"
                                 placeholder="Nhập ý tưởng/gợi ý riêng của bạn (tùy chọn)...">
-                            <button class="ai-btn write-with-prompt-btn"><i class="fas fa-pen-nib"></i> Viết theo
+                            <button type="button" class="ai-btn write-with-prompt-btn"><i class="fas fa-pen-nib"></i>
+                                Viết theo
                                 gợi ý (AI)</button>
-                            <button class="ai-btn auto-write"><i class="fas fa-magic"></i> Viết tự động
+                            <button type="button" class="ai-btn auto-write"><i class="fas fa-magic"></i> Viết tự động
                                 (AI)</button>
                         </div>
                     </div>
@@ -296,8 +412,10 @@
                         placeholder="Hãy nhập nội dung Đặt vấn đề vào đây nếu không muốn AI viết tự động"></div>
 
                     <div class="form-actions">
-                        <button class="secondary-btn prev-btn"><i class="fas fa-arrow-left"></i> QUAY LẠI</button>
-                        <button class="primary-btn next-btn">TIẾP THEO <i class="fas fa-arrow-right"></i></button>
+                        <button type="button" class="secondary-btn prev-btn"><i class="fas fa-arrow-left"></i> QUAY
+                            LẠI</button>
+                        <button type="button" class="primary-btn next-btn">TIẾP THEO <i
+                                class="fas fa-arrow-right"></i></button>
                     </div>
                 </div>
             </div>
@@ -314,9 +432,10 @@
                         <div class="ai-controls">
                             <input type="text" class="ai-prompt-input"
                                 placeholder="Nhập ý tưởng/gợi ý riêng của bạn (tùy chọn)...">
-                            <button class="ai-btn write-with-prompt-btn"><i class="fas fa-pen-nib"></i> Viết theo
+                            <button type="button" class="ai-btn write-with-prompt-btn"><i class="fas fa-pen-nib"></i>
+                                Viết theo
                                 gợi ý (AI)</button>
-                            <button class="ai-btn auto-write"><i class="fas fa-magic"></i> Viết tự động
+                            <button type="button" class="ai-btn auto-write"><i class="fas fa-magic"></i> Viết tự động
                                 (AI)</button>
                         </div>
                     </div>
@@ -324,8 +443,10 @@
                         placeholder="Hãy nhập nội dung Thực trạng vào đây nếu không muốn AI viết tự động"></div>
 
                     <div class="form-actions">
-                        <button class="secondary-btn prev-btn"><i class="fas fa-arrow-left"></i> QUAY LẠI</button>
-                        <button class="primary-btn next-btn">TIẾP THEO <i class="fas fa-arrow-right"></i></button>
+                        <button type="button" class="secondary-btn prev-btn"><i class="fas fa-arrow-left"></i> QUAY
+                            LẠI</button>
+                        <button type="button" class="primary-btn next-btn">TIẾP THEO <i
+                                class="fas fa-arrow-right"></i></button>
                     </div>
                 </div>
             </div>
@@ -341,17 +462,20 @@
                         <h2>Nội dung giải pháp 1</h2>
                         <div class="ai-controls">
                             <input type="text" class="ai-prompt-input" placeholder="Nhập gợi ý cho giải pháp 1...">
-                            <button class="ai-btn write-with-prompt-btn"><i class="fas fa-pen-nib"></i> Viết theo
+                            <button type="button" class="ai-btn write-with-prompt-btn"><i class="fas fa-pen-nib"></i>
+                                Viết theo
                                 gợi ý (AI)</button>
-                            <button class="ai-btn auto-write"><i class="fas fa-magic"></i> Viết tự động
+                            <button type="button" class="ai-btn auto-write"><i class="fas fa-magic"></i> Viết tự động
                                 (AI)</button>
                         </div>
                     </div>
                     <div class="editor-area" contenteditable="true" data-id="2.3.1"
                         placeholder="Hãy nhập nội dung Giải pháp 1 vào đây nếu không muốn AI viết tự động"></div>
                     <div class="form-actions">
-                        <button class="secondary-btn prev-btn"><i class="fas fa-arrow-left"></i> QUAY LẠI</button>
-                        <button class="primary-btn next-btn">TIẾP THEO <i class="fas fa-arrow-right"></i></button>
+                        <button type="button" class="secondary-btn prev-btn"><i class="fas fa-arrow-left"></i> QUAY
+                            LẠI</button>
+                        <button type="button" class="primary-btn next-btn">TIẾP THEO <i
+                                class="fas fa-arrow-right"></i></button>
                     </div>
                 </div>
             </div>
@@ -367,17 +491,20 @@
                         <h2>Nội dung giải pháp 2</h2>
                         <div class="ai-controls">
                             <input type="text" class="ai-prompt-input" placeholder="Nhập gợi ý cho giải pháp 2...">
-                            <button class="ai-btn write-with-prompt-btn"><i class="fas fa-pen-nib"></i> Viết theo
+                            <button type="button" class="ai-btn write-with-prompt-btn"><i class="fas fa-pen-nib"></i>
+                                Viết theo
                                 gợi ý (AI)</button>
-                            <button class="ai-btn auto-write"><i class="fas fa-magic"></i> Viết tự động
+                            <button type="button" class="ai-btn auto-write"><i class="fas fa-magic"></i> Viết tự động
                                 (AI)</button>
                         </div>
                     </div>
                     <div class="editor-area" contenteditable="true" data-id="2.3.2"
                         placeholder="Hãy nhập nội dung Giải pháp 2 vào đây nếu không muốn AI viết tự động"></div>
                     <div class="form-actions">
-                        <button class="secondary-btn prev-btn"><i class="fas fa-arrow-left"></i> QUAY LẠI</button>
-                        <button class="primary-btn next-btn">TIẾP THEO <i class="fas fa-arrow-right"></i></button>
+                        <button type="button" class="secondary-btn prev-btn"><i class="fas fa-arrow-left"></i> QUAY
+                            LẠI</button>
+                        <button type="button" class="primary-btn next-btn">TIẾP THEO <i
+                                class="fas fa-arrow-right"></i></button>
                     </div>
                 </div>
             </div>
@@ -393,17 +520,20 @@
                         <h2>Nội dung giải pháp 3</h2>
                         <div class="ai-controls">
                             <input type="text" class="ai-prompt-input" placeholder="Nhập gợi ý cho giải pháp 3...">
-                            <button class="ai-btn write-with-prompt-btn"><i class="fas fa-pen-nib"></i> Viết theo
+                            <button type="button" class="ai-btn write-with-prompt-btn"><i class="fas fa-pen-nib"></i>
+                                Viết theo
                                 gợi ý (AI)</button>
-                            <button class="ai-btn auto-write"><i class="fas fa-magic"></i> Viết tự động
+                            <button type="button" class="ai-btn auto-write"><i class="fas fa-magic"></i> Viết tự động
                                 (AI)</button>
                         </div>
                     </div>
                     <div class="editor-area" contenteditable="true" data-id="2.3.3"
                         placeholder="Hãy nhập nội dung Giải pháp 3 vào đây nếu không muốn AI viết tự động"></div>
                     <div class="form-actions">
-                        <button class="secondary-btn prev-btn"><i class="fas fa-arrow-left"></i> QUAY LẠI</button>
-                        <button class="primary-btn next-btn">TIẾP THEO <i class="fas fa-arrow-right"></i></button>
+                        <button type="button" class="secondary-btn prev-btn"><i class="fas fa-arrow-left"></i> QUAY
+                            LẠI</button>
+                        <button type="button" class="primary-btn next-btn">TIẾP THEO <i
+                                class="fas fa-arrow-right"></i></button>
                     </div>
                 </div>
             </div>
@@ -420,9 +550,10 @@
                         <div class="ai-controls">
                             <input type="text" class="ai-prompt-input"
                                 placeholder="Nhập điểm mới/sáng tạo cụ thể (nếu có)...">
-                            <button class="ai-btn write-with-prompt-btn"><i class="fas fa-pen-nib"></i> Viết theo
+                            <button type="button" class="ai-btn write-with-prompt-btn"><i class="fas fa-pen-nib"></i>
+                                Viết theo
                                 gợi ý (AI)</button>
-                            <button class="ai-btn auto-write"><i class="fas fa-magic"></i> Viết tự động
+                            <button type="button" class="ai-btn auto-write"><i class="fas fa-magic"></i> Viết tự động
                                 (AI)</button>
                         </div>
                     </div>
@@ -430,8 +561,10 @@
                         placeholder="Hãy nhập nội dung Tính mới & Sáng tạo vào đây nếu không muốn AI viết tự động">
                     </div>
                     <div class="form-actions">
-                        <button class="secondary-btn prev-btn"><i class="fas fa-arrow-left"></i> QUAY LẠI</button>
-                        <button class="primary-btn next-btn">TIẾP THEO <i class="fas fa-arrow-right"></i></button>
+                        <button type="button" class="secondary-btn prev-btn"><i class="fas fa-arrow-left"></i> QUAY
+                            LẠI</button>
+                        <button type="button" class="primary-btn next-btn">TIẾP THEO <i
+                                class="fas fa-arrow-right"></i></button>
                     </div>
                 </div>
             </div>
@@ -448,20 +581,61 @@
                         <div class="ai-controls">
                             <input type="text" class="ai-prompt-input"
                                 placeholder="Nhập hiệu quả thực tế bạn mong muốn...">
+                            <button type="button" class="ai-btn write-with-prompt-btn"><i class="fas fa-pen-nib"></i>
+                                Viết theo
+                                gợi ý (AI)</button>
+                            <button type="button" class="ai-btn auto-write"><i class="fas fa-magic"></i> Viết tự động
+                                (AI)</button>
+                        </div>
+                    </div>
+                    <div class="editor-area" contenteditable="true" data-id="3"
+                        placeholder="Hãy nhập nội dung Kết luận vào đây nếu không muốn AI viết tự động"></div>
+                    <div class="form-actions">
+                        <button type="button" class="secondary-btn prev-btn"><i class="fas fa-arrow-left"></i> QUAY
+                            LẠI</button>
+                        <button type="button" class="primary-btn next-btn" id="impact-next-btn"
+                            style="display: none;">TIẾP THEO <i class="fas fa-arrow-right"></i></button>
+                        <button type="button" id="complete-btn" class="primary-btn success-btn"
+                            style="background: #059669; border-color: #059669;"><i class="fas fa-check-double"></i>
+                            HOÀN THÀNH</button>
+                        <button type="button" id="export-word-btn" class="primary-btn export-btn"
+                            style="display: none;"><i class="fas fa-file-word"></i>
+                            XUẤT WORD (.DOCX)</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section: Appendix (Phụ lục) - NEW for SKKN -->
+            <div id="appendix-section" class="content-section">
+                <div class="section-hero">
+                    <h1>PHỤ LỤC</h1>
+                    <p>Hệ thống danh mục tài liệu tham khảo và hồ sơ minh chứng kèm theo</p>
+                </div>
+                <div class="card">
+                    <div class="card-header ai-header-group">
+                        <h2>Phụ lục hồ sơ</h2>
+                        <div class="ai-controls">
+                            <input type="text" class="ai-prompt-input"
+                                placeholder="Nhập tên tài liệu tham khảo riêng (tùy chọn)...">
                             <button class="ai-btn write-with-prompt-btn"><i class="fas fa-pen-nib"></i> Viết theo
                                 gợi ý (AI)</button>
                             <button class="ai-btn auto-write"><i class="fas fa-magic"></i> Viết tự động
                                 (AI)</button>
                         </div>
                     </div>
-                    <div class="editor-area" contenteditable="true" data-id="3"
-                        placeholder="Hãy nhập nội dung Kết luận vào đây nếu không muốn AI viết tự động"></div>
+                    <div class="editor-area" contenteditable="true" data-id="appendix"
+                        placeholder="Có thể dán link hình ảnh minh chứng hoặc danh sách tài liệu tham khảo vào đây">
+                    </div>
+
                     <div class="form-actions" style="justify-content: space-between;">
-                        <button class="secondary-btn prev-btn"><i class="fas fa-arrow-left"></i> QUAY LẠI</button>
-                        <button id="complete-btn" class="primary-btn success-btn"><i class="fas fa-check-double"></i>
+                        <button type="button" class="secondary-btn prev-btn"><i class="fas fa-arrow-left"></i> QUAY
+                            LẠI</button>
+                        <button id="skkn-complete-btn" class="primary-btn success-btn"><i
+                                class="fas fa-check-double"></i>
                             HOÀN THÀNH</button>
-                        <button id="export-word-btn" class="primary-btn export-btn"><i class="fas fa-file-word"></i>
-                            XUẤT WORD (.DOCX)</button>
+                        <button id="skkn-export-word-btn" class="primary-btn export-btn"><i
+                                class="fas fa-file-word"></i>
+                            XUẤT WORD SKKN (.DOCX)</button>
                     </div>
                 </div>
             </div>
@@ -497,7 +671,6 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- Analysis Results View (Hidden by default) -->
                 <div id="appraisal-results-view" style="display: none;">
                     <div class="results-header">
@@ -513,7 +686,6 @@
                             <a href="#" id="re-upload-btn" class="re-upload-link">Thẩm định file khác</a>
                         </div>
                     </div>
-
                     <div class="analysis-summary-card">
                         <p id="analysis-summary-text">Biện pháp có cấu trúc chặt chẽ, bám sát yêu cầu của Chương trình
                             GDPT 2018 và các văn bản quy phạm pháp luật hiện hành. Nội dung kết hợp khéo léo giữa tâm lý
@@ -521,279 +693,322 @@
                             có dấu hiệu can thiệp của AI trong cách hành văn và thiếu phần nội dung chi tiết của giải
                             pháp 2 cũng như phần kết luận.</p>
                     </div>
+                    <div class="card result-card">
+                        <!-- Biện pháp Appraisal Content -->
+                        <div id="bp-appraisal-content">
+                            <div class="card-header">
+                                <h2>KẾT QUẢ THẨM ĐỊNH</h2>
+                                <p id="analysis-summary-text-result">Hệ thống đang tóm tắt kết quả...</p>
+                            </div>
+                            <div class="metrics-grid">
+                                <div class="metric-card">
+                                    <div class="circular-progress" data-value="85" data-color="#2ecc71">
+                                        <svg width="120" height="120">
+                                            <circle class="bg" cx="60" cy="60" r="54"></circle>
+                                            <circle class="progress" cx="60" cy="60" r="54"></circle>
+                                        </svg>
+                                        <div class="value">85<span>/100 điểm</span></div>
+                                    </div>
+                                    <h3>CHẤT LƯỢNG TỔNG THỂ</h3>
+                                    <span class="status-badge success">Giỏi</span>
+                                </div>
+                                <div class="metric-card">
+                                    <div class="circular-progress" data-value="22" data-color="#f39c12">
+                                        <svg width="120" height="120">
+                                            <circle class="bg" cx="60" cy="60" r="54"></circle>
+                                            <circle class="progress" cx="60" cy="60" r="54"></circle>
+                                        </svg>
+                                        <div class="value">22%<span>trùng lặp</span></div>
+                                    </div>
+                                    <h3>NGUY CƠ ĐẠO VĂN</h3>
+                                    <span class="status-badge warning">Trung bình</span>
+                                </div>
+                                <div class="metric-card">
+                                    <div class="circular-progress" data-value="55" data-color="#e74c3c">
+                                        <svg width="120" height="120">
+                                            <circle class="bg" cx="60" cy="60" r="54"></circle>
+                                            <circle class="progress" cx="60" cy="60" r="54"></circle>
+                                        </svg>
+                                        <div class="value">55%<span>nguy cơ AI</span></div>
+                                    </div>
+                                    <h3>NGUY CƠ AI</h3>
+                                    <span class="status-badge danger">Nguy hiểm</span>
+                                </div>
+                                <div class="structure-card">
+                                    <h3>CẤU TRÚC BIỆN PHÁP</h3>
+                                    <ul class="structure-list">
+                                        <li class="check"><i class="fas fa-check-circle"></i> Mục lục</li>
+                                        <li class="check"><i class="fas fa-check-circle"></i> 1. Đặt vấn đề</li>
+                                        <li class="check"><i class="fas fa-check-circle"></i> 2. Thực trạng vấn đề</li>
+                                        <li class="warn"><i class="fas fa-exclamation-triangle"></i> 3. Nội dung giải
+                                            pháp
+                                        </li>
+                                        <li class="error"><i class="fas fa-times-circle"></i> 4. Kết luận và kiến nghị
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
 
-                    <div class="metrics-grid">
-                        <div class="metric-card">
-                            <div class="circular-progress" data-value="82" data-color="#2ecc71">
-                                <svg width="120" height="120">
-                                    <circle class="bg" cx="60" cy="60" r="54"></circle>
-                                    <circle class="progress" cx="60" cy="60" r="54"></circle>
-                                </svg>
-                                <div class="value">82<span>/100 điểm</span></div>
+                            <div class="charts-row">
+                                <div class="chart-container-card">
+                                    <div class="chart-header">
+                                        <i class="fas fa-chart-bar"></i>
+                                        <h3>Tổng quan tiêu chí</h3>
+                                    </div>
+                                    <div class="radar-chart-container">
+                                        <!-- Radar chart placeholder - will be drawn with SVG -->
+                                        <svg id="radar-chart" viewBox="0 0 200 200" width="100%" height="240"></svg>
+                                    </div>
+                                </div>
+                                <div class="chart-container-card">
+                                    <div class="chart-header">
+                                        <i class="fas fa-check-square"></i>
+                                        <h3>Chi tiết điểm số</h3>
+                                    </div>
+                                    <div class="bar-chart-container">
+                                        <div class="bar-item">
+                                            <div class="bar-label">Tính khoa học</div>
+                                            <div class="bar-track">
+                                                <div class="bar-fill success" style="width: 90%;"></div>
+                                            </div>
+                                            <div class="bar-value">9/10</div>
+                                        </div>
+                                        <div class="bar-item">
+                                            <div class="bar-label">Tính thực tiễn</div>
+                                            <div class="bar-track">
+                                                <div class="bar-fill success" style="width: 90%;"></div>
+                                            </div>
+                                            <div class="bar-value">9/10</div>
+                                        </div>
+                                        <div class="bar-item">
+                                            <div class="bar-label">Tính mới & Sáng tạo</div>
+                                            <div class="bar-track">
+                                                <div class="bar-fill success" style="width: 80%;"></div>
+                                            </div>
+                                            <div class="bar-value">8/10</div>
+                                        </div>
+                                        <div class="bar-item">
+                                            <div class="bar-label">Khả năng áp dụng</div>
+                                            <div class="bar-track">
+                                                <div class="bar-fill success" style="width: 80%;"></div>
+                                            </div>
+                                            <div class="bar-value">8/10</div>
+                                        </div>
+                                        <div class="bar-item">
+                                            <div class="bar-label">Hiệu quả minh chứng</div>
+                                            <div class="bar-track">
+                                                <div class="bar-fill warning" style="width: 70%;"></div>
+                                            </div>
+                                            <div class="bar-value">7/10</div>
+                                        </div>
+                                        <div class="bar-item">
+                                            <div class="bar-label">Ngôn ngữ & Trình bày</div>
+                                            <div class="bar-track">
+                                                <div class="bar-fill success" style="width: 80%;"></div>
+                                            </div>
+                                            <div class="bar-value">8/10</div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <h3>CHẤT LƯỢNG TỔNG THỂ</h3>
-                            <span class="status-badge success">Giỏi</span>
-                        </div>
-                        <div class="metric-card">
-                            <div class="circular-progress" data-value="22" data-color="#f39c12">
-                                <svg width="120" height="120">
-                                    <circle class="bg" cx="60" cy="60" r="54"></circle>
-                                    <circle class="progress" cx="60" cy="60" r="54"></circle>
-                                </svg>
-                                <div class="value">22%<span>trùng lặp</span></div>
-                            </div>
-                            <h3>NGUY CƠ ĐẠO VĂN</h3>
-                            <span class="status-badge warning">Trung bình</span>
-                        </div>
-                        <div class="metric-card">
-                            <div class="circular-progress" data-value="55" data-color="#e74c3c">
-                                <svg width="120" height="120">
-                                    <circle class="bg" cx="60" cy="60" r="54"></circle>
-                                    <circle class="progress" cx="60" cy="60" r="54"></circle>
-                                </svg>
-                                <div class="value">55%<span>nguy cơ AI</span></div>
-                            </div>
-                            <h3>NGUY CƠ AI</h3>
-                            <span class="status-badge danger">Nguy hiểm</span>
-                        </div>
-                        <div class="structure-card">
-                            <h3>CẤU TRÚC BIỆN PHÁP</h3>
-                            <ul class="structure-list">
-                                <li class="check"><i class="fas fa-check-circle"></i> Mục lục</li>
-                                <li class="check"><i class="fas fa-check-circle"></i> 1. Đặt vấn đề</li>
-                                <li class="check"><i class="fas fa-check-circle"></i> 2. Thực trạng vấn đề</li>
-                                <li class="warn"><i class="fas fa-exclamation-triangle"></i> 3. Nội dung giải pháp</li>
-                                <li class="error"><i class="fas fa-times-circle"></i> 4. Kết luận và kiến nghị</li>
-                            </ul>
-                        </div>
-                    </div>
 
-                    <div class="charts-row">
-                        <div class="chart-container-card">
-                            <div class="chart-header">
-                                <i class="fas fa-chart-bar"></i>
-                                <h3>Tổng quan tiêu chí</h3>
-                            </div>
-                            <div class="radar-chart-container">
-                                <!-- Radar chart placeholder - will be drawn with SVG -->
-                                <svg id="radar-chart" viewBox="0 0 200 200" width="100%" height="240"></svg>
-                            </div>
-                        </div>
-                        <div class="chart-container-card">
-                            <div class="chart-header">
-                                <i class="fas fa-check-square"></i>
-                                <h3>Chi tiết điểm số</h3>
-                            </div>
-                            <div class="bar-chart-container">
-                                <div class="bar-item">
-                                    <div class="bar-label">Tính khoa họ...</div>
-                                    <div class="bar-track">
-                                        <div class="bar-fill success" style="width: 90%;"></div>
-                                    </div>
-                                    <div class="bar-value">9/10</div>
+                            <!-- Plagiarism Section -->
+                            <div class="analysis-detail-card plagiarism-card">
+                                <div class="detail-header">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <h3>Các đoạn nghi ngờ đạo văn</h3>
                                 </div>
-                                <div class="bar-item">
-                                    <div class="bar-label">Tính thực tiễn</div>
-                                    <div class="bar-track">
-                                        <div class="bar-fill success" style="width: 90%;"></div>
+                                <div class="plagiarism-list">
+                                    <div class="plagiarism-item">
+                                        <p class="quote">"mục tiêu giáo dục không chỉ dừng lại ở việc truyền thụ tri
+                                            thức mà
+                                            còn
+                                            chú trọng phát triển phẩm chất"</p>
+                                        <span class="source">→ Nguồn: <a href="#">Các bài viết về Nghị quyết 29/NQ-TW
+                                                trên
+                                                mạng
+                                                giáo dục (95% tương tự)</a></span>
                                     </div>
-                                    <div class="bar-value">9/10</div>
-                                </div>
-                                <div class="bar-item">
-                                    <div class="bar-label">Tính mới & S...</div>
-                                    <div class="bar-track">
-                                        <div class="bar-fill success" style="width: 80%;"></div>
+                                    <div class="plagiarism-item">
+                                        <p class="quote">"Lý thuyết học tập trải nghiệm của David Kolb là nền tảng quan
+                                            trọng,
+                                            khẳng định rằng học sinh học tốt nhất"</p>
+                                        <span class="source">→ Nguồn: <a href="#">Giáo trình Tâm lý học/SKKN về học tập
+                                                trải
+                                                nghiệm (88% tương tự)</a></span>
                                     </div>
-                                    <div class="bar-value">8/10</div>
-                                </div>
-                                <div class="bar-item">
-                                    <div class="bar-label">Khả năng áp ...</div>
-                                    <div class="bar-track">
-                                        <div class="bar-fill success" style="width: 80%;"></div>
+                                    <div class="plagiarism-item">
+                                        <p class="quote">"đang trong giai đoạn phát triển mạnh mẽ về tâm sinh lý, hình
+                                            thành
+                                            nhân cách và các mối quan hệ xã hội"</p>
+                                        <span class="source">→ Nguồn: <a href="#">Đặc điểm tâm lý học sinh THCS - Tài
+                                                liệu
+                                                sư
+                                                phạm (92% tương tự)</a></span>
                                     </div>
-                                    <div class="bar-value">8/10</div>
-                                </div>
-                                <div class="bar-item">
-                                    <div class="bar-label">Hiệu quả min...</div>
-                                    <div class="bar-track">
-                                        <div class="bar-fill warning" style="width: 70%;"></div>
-                                    </div>
-                                    <div class="bar-value">7/10</div>
-                                </div>
-                                <div class="bar-item">
-                                    <div class="bar-label">Ngôn ngữ & ...</div>
-                                    <div class="bar-track">
-                                        <div class="bar-fill success" style="width: 80%;"></div>
-                                    </div>
-                                    <div class="bar-value">8/10</div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
 
-                    <!-- Plagiarism Section -->
-                    <div class="analysis-detail-card plagiarism-card">
-                        <div class="detail-header">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            <h3>Các đoạn nghi ngờ đạo văn</h3>
+                            <!-- AI Analysis Section -->
+                            <div class="analysis-detail-card ai-detail-card">
+                                <div class="detail-header">
+                                    <i class="fas fa-robot"></i>
+                                    <h3>Chi tiết phân tích AI</h3>
+                                </div>
+                                <div class="ai-stats-grid">
+                                    <div class="ai-stat-item">
+                                        <div class="stat-value">32</div>
+                                        <div class="stat-label">PERPLEXITY</div>
+                                        <div class="stat-info">AI: 20-40, Người: 40-80+</div>
+                                    </div>
+                                    <div class="ai-stat-item">
+                                        <div class="stat-value">38</div>
+                                        <div class="stat-label">BURSTINESS</div>
+                                        <div class="stat-info">AI: thấp, Người: cao</div>
+                                    </div>
+                                    <div class="ai-stat-item">
+                                        <div class="stat-value">65</div>
+                                        <div class="stat-label">PATTERN</div>
+                                        <div class="stat-info">Càng cao = càng nhiều AI</div>
+                                    </div>
+                                </div>
+                                <div class="ai-patterns">
+                                    <h4>Mẫu câu AI phát hiện:</h4>
+                                    <ul>
+                                        <li>"Trong bối cảnh... hiện nay"</li>
+                                        <li>"Tuy nhiên, thực tế cho thấy"</li>
+                                        <li>"Việc... là vô cùng cần thiết"</li>
+                                        <li>"Đáng chú ý là"</li>
+                                        <li>"Điều này cho thấy rằng"</li>
+                                    </ul>
+                                </div>
+                                <div class="ai-suggestions">
+                                    <h4><i class="far fa-lightbulb"></i> Gợi ý giảm AI:</h4>
+                                    <ul>
+                                        <li>Bổ sung các tình huống cụ thể của từng học sinh cá biệt trong lớp (viết
+                                            tay/kể
+                                            chuyện đời thực).</li>
+                                        <li>Thay đổi các cụm từ nối mang tính khuôn mẫu AI bằng cách diễn đạt dân dã,
+                                            thực
+                                            tế
+                                            hơn.</li>
+                                        <li>Cập nhật lại mốc thời gian (hiện tại đang để năm học 2025-2026 là thời điểm
+                                            tương
+                                            lai).</li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
-                        <div class="plagiarism-list">
-                            <div class="plagiarism-item">
-                                <p class="quote">"mục tiêu giáo dục không chỉ dừng lại ở việc truyền thụ tri thức mà còn
-                                    chú trọng phát triển phẩm chất"</p>
-                                <span class="source">→ Nguồn: <a href="#">Các bài viết về Nghị quyết 29/NQ-TW trên mạng
-                                        giáo dục (95% tương tự)</a></span>
-                            </div>
-                            <div class="plagiarism-item">
-                                <p class="quote">"Lý thuyết học tập trải nghiệm của David Kolb là nền tảng quan trọng,
-                                    khẳng định rằng học sinh học tốt nhất"</p>
-                                <span class="source">→ Nguồn: <a href="#">Giáo trình Tâm lý học/SKKN về học tập trải
-                                        nghiệm (88% tương tự)</a></span>
-                            </div>
-                            <div class="plagiarism-item">
-                                <p class="quote">"đang trong giai đoạn phát triển mạnh mẽ về tâm sinh lý, hình thành
-                                    nhân cách và các mối quan hệ xã hội"</p>
-                                <span class="source">→ Nguồn: <a href="#">Đặc điểm tâm lý học sinh THCS - Tài liệu sư
-                                        phạm (92% tương tự)</a></span>
-                            </div>
-                        </div>
-                    </div>
 
-                    <!-- AI Analysis Section -->
-                    <div class="analysis-detail-card ai-detail-card">
-                        <div class="detail-header">
-                            <i class="fas fa-robot"></i>
-                            <h3>Chi tiết phân tích AI</h3>
-                        </div>
-                        <div class="ai-stats-grid">
-                            <div class="ai-stat-item">
-                                <div class="stat-value">32</div>
-                                <div class="stat-label">PERPLEXITY</div>
-                                <div class="stat-info">AI: 20-40, Người: 40-80+</div>
+                        <!-- SKKN Appraisal Content (Injected by JS) -->
+                        <div id="skkn-appraisal-content" style="display: none;"></div>
+
+                        <div class="results-footer">
+                            <div class="action-buttons">
+                                <button class="primary-btn pulse-effect" id="export-appraisal-btn">
+                                    <i class="fas fa-file-word"></i> TẢI BÁO CÁO THẨM ĐỊNH (.DOCX)
+                                </button>
+                                <button class="ghost-btn" onclick="switchSection('appraisal-upload')">
+                                    <i class="fas fa-upload"></i> THẨM ĐỊNH FILE KHÁC
+                                </button>
                             </div>
-                            <div class="ai-stat-item">
-                                <div class="stat-value">38</div>
-                                <div class="stat-label">BURSTINESS</div>
-                                <div class="stat-info">AI: thấp, Người: cao</div>
-                            </div>
-                            <div class="ai-stat-item">
-                                <div class="stat-value">65</div>
-                                <div class="stat-label">PATTERN</div>
-                                <div class="stat-info">Càng cao = càng nhiều AI</div>
-                            </div>
-                        </div>
-                        <div class="ai-patterns">
-                            <h4>Mẫu câu AI phát hiện:</h4>
-                            <ul>
-                                <li>"Trong bối cảnh... hiện nay"</li>
-                                <li>"Tuy nhiên, thực tế cho thấy"</li>
-                                <li>"Việc... là vô cùng cần thiết"</li>
-                                <li>"Đáng chú ý là"</li>
-                                <li>"Điều này cho thấy rằng"</li>
-                            </ul>
-                        </div>
-                        <div class="ai-suggestions">
-                            <h4><i class="far fa-lightbulb"></i> Gợi ý giảm AI:</h4>
-                            <ul>
-                                <li>Bổ sung các tình huống cụ thể của từng học sinh cá biệt trong lớp (viết tay/kể
-                                    chuyện đời thực).</li>
-                                <li>Thay đổi các cụm từ nối mang tính khuôn mẫu AI bằng cách diễn đạt dân dã, thực tế
-                                    hơn.</li>
-                                <li>Cập nhật lại mốc thời gian (hiện tại đang để năm học 2025-2026 là thời điểm tương
-                                    lai).</li>
-                            </ul>
+                            <p class="back-link"><a href="#" onclick="switchSection('info'); return false;"> <i
+                                        class="fas fa-arrow-left"></i> Quay lại trang chủ</a></p>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Topic Analysis View (Image A3) -->
-            <div id="topic-analysis-view" style="display: none;">
-                <div class="analysis-modal">
-                    <div class="analysis-modal-header">
-                        <div class="header-content">
-                            <div class="target-icon">
-                                <i class="fas fa-bullseye"></i>
+                <!-- Topic Analysis View (Image A3) -->
+                <div id="topic-analysis-view" style="display: none;">
+                    <div class="analysis-modal">
+                        <div class="analysis-modal-header">
+                            <div class="header-content">
+                                <div class="target-icon">
+                                    <i class="fas fa-bullseye"></i>
+                                </div>
+                                <div>
+                                    <h2>Phân Tích Tên Đề Tài</h2>
+                                    <p>Kết quả đánh giá chi tiết (Quy trình 3 lớp)</p>
+                                </div>
                             </div>
-                            <div>
-                                <h2>Phân Tích Tên Đề Tài</h2>
-                                <p>Kết quả đánh giá chi tiết (Quy trình 3 lớp)</p>
+                            <button class="close-analysis-btn" id="close-topic-analysis"><i
+                                    class="fas fa-times"></i></button>
+                        </div>
+                        <div class="analysis-modal-body">
+                            <div class="suggestion-intro">
+                                <i class="far fa-lightbulb"></i> Đề xuất tên thay thế
                             </div>
-                        </div>
-                        <button class="close-analysis-btn" id="close-topic-analysis"><i
-                                class="fas fa-times"></i></button>
-                    </div>
-                    <div class="analysis-modal-body">
-                        <div class="suggestion-intro">
-                            <i class="far fa-lightbulb"></i> Đề xuất tên thay thế
-                        </div>
 
-                        <div id="topic-suggestions-list" class="topic-suggestions-list">
-                            <!-- Suggested topics will be injected here -->
-                            <div class="loading-suggestions">
-                                <i class="fas fa-spinner fa-spin"></i> Đang phân tích đề tài tối ưu...
+                            <div id="topic-suggestions-list" class="topic-suggestions-list">
+                                <!-- Suggested topics will be injected here -->
+                                <div class="loading-suggestions">
+                                    <i class="fas fa-spinner fa-spin"></i> Đang phân tích đề tài tối ưu...
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="analysis-footer">
-                            <button class="ghost-btn" id="keep-old-topic-btn">KHÔNG ĐỔI TÊN ĐỀ TÀI - TIẾP TỤC HOÀN
-                                CHỈNH</button>
+                            <div class="analysis-footer">
+                                <button class="ghost-btn" id="keep-old-topic-btn">KHÔNG ĐỔI TÊN ĐỀ TÀI - TIẾP TỤC HOÀN
+                                    CHỈNH</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Upgrade Plan View (Image A5) -->
-            <div id="upgrade-plan-view" style="display: none;">
-                <div class="analysis-modal">
-                    <div class="analysis-modal-header upgrade-header">
-                        <div class="header-content">
-                            <div class="export-report-group">
-                                <span><i class="fas fa-print"></i> Tải kết quả thẩm định:</span>
-                                <button class="mini-export-btn docx"><i class="fas fa-file-word"></i> Tải file
-                                    DOCX</button>
-                                <button class="mini-export-btn pdf"><i class="fas fa-file-pdf"></i> Tải file
-                                    PDF</button>
+                <!-- Upgrade Plan View (Image A5) -->
+                <div id="upgrade-plan-view" style="display: none;">
+                    <div class="analysis-modal">
+                        <div class="analysis-modal-header upgrade-header">
+                            <div class="header-content">
+                                <div class="export-report-group">
+                                    <span><i class="fas fa-print"></i> Tải kết quả thẩm định:</span>
+                                    <button class="mini-export-btn docx"><i class="fas fa-file-word"></i> Tải file
+                                        DOCX</button>
+                                    <button class="mini-export-btn pdf"><i class="fas fa-file-pdf"></i> Tải file
+                                        PDF</button>
+                                </div>
                             </div>
+                            <button class="close-analysis-btn" id="close-upgrade-plan"><i
+                                    class="fas fa-times"></i></button>
                         </div>
-                        <button class="close-analysis-btn" id="close-upgrade-plan"><i class="fas fa-times"></i></button>
-                    </div>
-                    <div class="analysis-modal-body">
-                        <div class="upgrade-detail-card">
-                            <div class="upgrade-card-header">
-                                <i class="fas fa-check-circle"></i> Giải Pháp Đề Xuất (AI Nâng Cấp)
-                            </div>
-                            <ul id="upgrade-steps-list" class="upgrade-steps-list">
-                                <!-- Steps will be injected here -->
-                            </ul>
+                        <div class="analysis-modal-body">
+                            <div class="upgrade-detail-card">
+                                <div class="upgrade-card-header">
+                                    <i class="fas fa-check-circle"></i> Giải Pháp Đề Xuất (AI Nâng Cấp)
+                                </div>
+                                <ul id="upgrade-steps-list" class="upgrade-steps-list">
+                                    <!-- Steps will be injected here -->
+                                </ul>
 
-                            <div class="ai-risk-alert">
-                                <i class="fas fa-exclamation-triangle"></i>
-                                <span>Lưu ý: Nguy cơ AI cao (<span id="alert-ai-score">0</span>%). Khi bấm "Xác nhận Cải
-                                    thiện", hệ thống sẽ tự động áp dụng <strong>10 kỹ thuật giảm AI</strong> (Perplexity
-                                    Injection, Burstiness Control, Syntactic Variation...) để đưa AI score về mức an
-                                    toàn.</span>
+                                <div class="ai-risk-alert">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <span>Lưu ý: Nguy cơ AI cao (<span id="alert-ai-score">0</span>%). Khi bấm "Xác nhận
+                                        Cải
+                                        thiện", hệ thống sẽ tự động áp dụng <strong>10 kỹ thuật giảm AI</strong>
+                                        (Perplexity
+                                        Injection, Burstiness Control, Syntactic Variation...) để đưa AI score về mức an
+                                        toàn.</span>
+                                </div>
+                                <div class="page-limit-setting">
+                                    <i class="fas fa-file-alt"></i>
+                                    <span>Giới hạn bản in (Khoảng):</span>
+                                    <input type="text" id="upgrade-page-limit" value="15-20" placeholder="VD: 15-20">
+                                    <span class="unit">trang</span>
+                                </div>
                             </div>
-                            <div class="page-limit-setting">
-                                <i class="fas fa-file-alt"></i>
-                                <span>Giới hạn bản in (Khoảng):</span>
-                                <input type="text" id="upgrade-page-limit" value="15-20" placeholder="VD: 15-20">
-                                <span class="unit">trang</span>
-                            </div>
-                        </div>
 
-                        <div class="upgrade-footer">
-                            <p>Hệ thống sẽ sửa trực tiếp trên file DOCX của bạn, giữ nguyên định dạng và bôi đỏ chữ mới.
-                            </p>
-                            <button class="primary-btn pulse-effect" id="confirm-upgrade-btn">
-                                <i class="fas fa-play"></i> XÁC NHẬN CẢI THIỆN
-                            </button>
+                            <div class="upgrade-footer">
+                                <p>Hệ thống sẽ sửa trực tiếp trên file DOCX của bạn, giữ nguyên định dạng và bôi đỏ chữ
+                                    mới.
+                                </p>
+                                <button class="primary-btn pulse-effect" id="confirm-upgrade-btn">
+                                    <i class="fas fa-play"></i> XÁC NHẬN CẢI THIỆN
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-</div>
 </div>
 </main>
 </div>
@@ -816,6 +1031,26 @@
         </div>
         <div class="modal-footer">
             <button id="save-api-key" class="primary-btn">LƯU CẤU HÌNH</button>
+        </div>
+    </div>
+</div>
+
+<!-- Topic Choice Modal - NEW (To replace prompt) -->
+<div id="topic-choice-modal" class="modal">
+    <div class="modal-content" style="max-width: 650px;">
+        <div class="modal-header">
+            <h2>LỰA CHỌN ĐỀ TÀI HAY NHẤT</h2>
+            <span class="close-modal" id="close-topic-choice">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p style="margin-bottom: 1.5rem; font-weight: 500; color: #4b5563;">AI đã phân tích và đề xuất bộ 5 đề tài
+                xuất sắc nhất cho bạn. Hãy chạm vào đề tài bạn ưng ý nhất để áp dụng ngay:</p>
+            <div id="topic-choice-list" style="display: flex; flex-direction: column; gap: 12px;">
+                <!-- Choice buttons will be injected here -->
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="secondary-btn" id="cancel-topic-choice" style="padding: 0.8rem 2rem;">ĐÓNG</button>
         </div>
     </div>
 </div>
@@ -877,49 +1112,24 @@
                                 thành</strong> và cuối cùng <strong>Xuất Word (.docx)</strong>.</p>
                     </div>
                 </div>
+                <div style="display: flex; gap: 1.5rem;">
+                    <div
+                        style="width: 45px; height: 45px; background: #faf5ff; color: #805ad5; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 800; font-size: 1.25rem;">
+                        5</div>
+                    <div>
+                        <h3 style="color: #2d3748; margin-bottom: 0.5rem; font-size: 1.2rem;">Thẩm định và Tự động chỉnh
+                            sửa
+                        </h3>
+                        <p style="color: #718096; line-height: 1.6;">Tải file có sẵn của bạn lên mục <strong>"Thẩm định
+                                Biện pháp + SKKN"</strong>. AI sẽ phân tích các ưu nhược điểm, sau đó nhấn <strong>"Xác
+                                nhận Cải thiện"</strong> để hệ thống tự động sửa lỗi và nâng cấp báo cáo hoàn chỉnh.</p>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="modal-footer"
             style="padding: 1.5rem 2.5rem; background: #f7fafc; border-top: 1px solid #edf2f7; display: flex; justify-content: flex-end;">
             <button class="primary-btn close-guide-modal">ĐÃ HIỂU</button>
-        </div>
-    </div>
-</div>
-
-<!-- Writing Progress Modal (A6) -->
-<div id="writing-progress-view" style="display: none;">
-    <div class="analysis-modal small-modal">
-        <div class="analysis-modal-body" style="text-align: center; padding: 3rem 2rem;">
-            <div id="progress-loading-icon">
-                <i class="fas fa-cog fa-spin" style="font-size: 4rem; color: #16a34a; margin-bottom: 1.5rem;"></i>
-            </div>
-            <div id="progress-success-icon" style="display: none;">
-                <div class="success-checkmark-wrapper">
-                    <i class="fas fa-check-circle" style="font-size: 5rem; color: #16a34a; margin-bottom: 1.5rem;"></i>
-                </div>
-            </div>
-
-            <h2 id="progress-title" style="margin-bottom: 0.5rem; color: #1e293b;">Đang nâng cấp biện pháp...</h2>
-            <p id="progress-status" style="color: #64748b; margin-bottom: 2rem;">Vui lòng đợi trong giây lát, AI đang xử
-                lý nội dung từng phần.</p>
-
-            <div class="progress-bar-container"
-                style="background: #e2e8f0; border-radius: 10px; height: 12px; overflow: hidden; margin-bottom: 10px;">
-                <div id="writing-progress-bar-fill"
-                    style="width: 0%; height: 100%; background: linear-gradient(90deg, #10b981, #34d399); transition: 0.5s;">
-                </div>
-            </div>
-            <p id="progress-percent" style="font-weight: 800; color: #16a34a; margin-top: 0.5rem; font-size: 1.2rem;">0%
-            </p>
-
-            <div id="finished-actions" style="display: none; margin-top: 2rem; flex-direction: column; gap: 10px;">
-                <button class="primary-btn pulse-effect" id="final-export-docx-btn"
-                    style="width: 100%; border-radius: 12px; padding: 15px; font-weight: 700;">
-                    <i class="fas fa-file-word"></i> TẢI BIỆN PHÁP HOÀN CHỈNH (.DOCX)
-                </button>
-                <button class="ghost-btn" id="close-progress-btn" style="width: 100%; border: none;">Đóng và xem nội
-                    dung chi tiết</button>
-            </div>
         </div>
     </div>
 </div>
