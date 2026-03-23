@@ -151,6 +151,49 @@ document.addEventListener('DOMContentLoaded', () => {
     const prevBtns = document.querySelectorAll('.prev-btn');
     const writeAllBtn = document.querySelector('.write-all-btn');
     const exportWordBtn = document.getElementById('export-word-btn');
+    const writingProgressView = document.getElementById('writing-progress-view');
+    const progressBarFill = document.getElementById('writing-progress-bar-fill');
+    const progressPercent = document.getElementById('writing-progress-percent');
+    const topicAnalysisView = document.getElementById('topic-analysis-view');
+    const refineTopicBtn = document.getElementById('refine-topic-btn');
+    const closeTopicAnalysis = document.getElementById('close-topic-analysis');
+    const topicSuggestionsList = document.getElementById('topic-suggestions-list');
+    const upgradePlanView = document.getElementById('upgrade-plan-view');
+    const upgradeStepsList = document.getElementById('upgrade-steps-list');
+    const alertAiScore = document.getElementById('alert-ai-score');
+    const topicTitleInput = document.getElementById('topic-title');
+    const closeUpgradePlanBtn = document.getElementById('close-upgrade-plan');
+    const exportAppraisalBtn = document.getElementById('export-appraisal-btn');
+    const confirmUpgradeBtn = document.getElementById('confirm-upgrade-btn');
+    const upgradePageLimitInput = document.getElementById('upgrade-page-limit');
+    const writingProgressOverlay = document.getElementById('writing-progress-overlay');
+    const progressLoadingIcon = document.getElementById('progress-loading-icon');
+    const progressSuccessIcon = document.getElementById('progress-success-icon');
+    const progressTitle = document.getElementById('progress-title');
+    const progressStatus = document.getElementById('writing-progress-status');
+    const progressLog = document.getElementById('writing-progress-log');
+    const finishedActions = document.getElementById('writing-finished-actions');
+    const closeProgressOverlayBtn = document.getElementById('close-progress-overlay');
+    const viewResultBtn = document.getElementById('view-result-btn');
+    const exportAfterUpgradeBtn = document.getElementById('export-after-upgrade-btn');
+    const keepOldTopicBtn = document.getElementById('keep-old-topic-btn');
+    const appraisalUpgradeResultView = document.getElementById('appraisal-upgrade-result-view');
+    const appraisalResultsView = document.getElementById('appraisal-results-view');
+    const exportRefinedDocxBtn = document.getElementById('export-refined-docx-btn');
+    const refinedFullEditor = document.getElementById('refined-full-editor');
+    const uploadDropzone = document.getElementById('upload-dropzone');
+    const bpAppraisalContent = document.getElementById('bp-appraisal-content');
+    const skknAppraisalContent = document.getElementById('skkn-appraisal-content');
+    const analysisSummaryText = document.getElementById('analysis-summary-text');
+    const selectFileBtn = document.getElementById('select-file-btn');
+    const fileInput = document.getElementById('file-upload-input');
+    const uploadView = document.getElementById('appraisal-upload-view');
+    const resultsView = document.getElementById('appraisal-results-view');
+    const reUploadBtn = document.getElementById('re-upload-btn');
+    const completeBtn = document.getElementById('complete-btn');
+    const skknCompleteBtn = document.getElementById('skkn-complete-btn');
+    const skknExportWordBtn = document.getElementById('skkn-export-word-btn');
+
     let lastAppraisalData = null;
     let lastAppraisedText = "";
 
@@ -408,28 +451,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    document.getElementById('refine-topic-btn')?.addEventListener('click', () => {
-        const appraisalType = document.querySelector('input[name="appraisal_type"]:checked')?.value || "BIỆN PHÁP";
-        const mode = appraisalType === "SKKN" ? "skkn" : "biên-pháp";
-
-        // Find corresponding tab button and click it
-        const tabBtn = Array.from(tabButtons).find(btn => btn.getAttribute('data-mode') === mode);
-        if (tabBtn) tabBtn.click();
-
-        // Populate context if appraisal text exists
-        if (lastAppraisedText && appraisalContextArea) {
-            appraisalContextArea.value = lastAppraisedText;
-        }
-
-        // Jump to first section and trigger Write All
-        currentSectionIndex = 0;
-        switchSection('info');
-        // Small delay to ensure tab switch completes
-        setTimeout(() => {
-            const writeAllBtn = document.querySelector('.write-all-btn');
-            if (writeAllBtn) writeAllBtn.click();
-        }, 500);
-    });
+    // Refine Topic button (redundant jump removed, handled by modular logic later)
 
     navItems.forEach(item => {
         item.addEventListener('click', () => {
@@ -755,6 +777,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const ids = currentMode === 'skkn' ? ['1', 'theory', '2', '2.3.1', '2.3.2', '2.3.3', '2.4', '3', 'appendix'] : ['1', '2', '2.3.1', '2.3.2', '2.3.3', '2.4', '3'];
+            let prompt = "";
 
             const idToSection = {
                 '1': 'section1',
@@ -1179,20 +1202,17 @@ document.addEventListener('DOMContentLoaded', () => {
         topicChoiceModal.style.display = 'none';
     });
 
-    const completeBtn = document.getElementById('complete-btn');
     completeBtn?.addEventListener('click', () => {
         alert("Chúc mừng! Bạn đã hoàn thành báo cáo biện pháp GVG/GVCNG. Hãy nhấn Xuất Word để tải file về.");
-        completeBtn.innerHTML = '<i class="fas fa-check"></i> ĐÃ HOÀN THÀNH';
-        completeBtn.style.opacity = '0.8';
+        if (completeBtn) {
+            completeBtn.innerHTML = '<i class="fas fa-check"></i> ĐÃ HOÀN THÀNH';
+            completeBtn.style.opacity = '0.8';
+        }
+        if (exportWordBtn) exportWordBtn.style.display = 'flex';
     });
 
     // Appraisal Logic
-    const selectFileBtn = document.getElementById('select-file-btn');
-    const fileInput = document.getElementById('file-upload-input');
-    const uploadDropzone = document.getElementById('upload-dropzone');
-    const uploadView = document.getElementById('appraisal-upload-view');
-    const resultsView = document.getElementById('appraisal-results-view');
-    const reUploadBtn = document.getElementById('re-upload-btn');
+    if (selectFileBtn) selectFileBtn.addEventListener('click', () => fileInput?.click());
 
     selectFileBtn?.addEventListener('click', () => fileInput.click());
 
@@ -1215,8 +1235,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- SKKN LOGIC ---
     // Finish SKKN Logic
-    document.getElementById('skkn-complete-btn')?.addEventListener('click', () => {
+    skknCompleteBtn?.addEventListener('click', () => {
         alert("Chúc mừng! Bạn đã hoàn thành báo cáo Sáng kiến kinh nghiệm (SKKN). Hãy nhấn Xuất Word để tải file về.");
+        if (skknCompleteBtn) {
+            skknCompleteBtn.innerHTML = '<i class="fas fa-check"></i> ĐÃ HOÀN THÀNH';
+            skknCompleteBtn.style.opacity = '0.8';
+        }
+        if (skknExportWordBtn) skknExportWordBtn.style.display = 'flex';
     });
 
     // Word Export for SKKN
@@ -1358,132 +1383,265 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!lastAppraisalData) return;
 
         try {
-            const doc = new docx.Document({
-                styles: {
-                    default: {
-                        paragraph: {
-                            run: {
-                                size: 24,
-                                font: "Times New Roman"
-                            }
-                        }
-                    }
-                },
-                sections: [{
-                    properties: {},
-                    children: [
-                        new docx.Paragraph({
-                            children: [new docx.TextRun({ text: "BÁO CÁO THẨM ĐỊNH BIỆN PHÁP + SKKN", bold: true, size: 28 })],
-                            alignment: docx.AlignmentType.CENTER,
-                        }),
-                        new docx.Paragraph({ text: "" }),
-                        new docx.Paragraph({
-                            children: [new docx.TextRun({ text: "Tóm tắt đánh giá:", bold: true })],
-                        }),
-                        new docx.Paragraph({
-                            children: [new docx.TextRun({ text: lastAppraisalData.summary })],
-                        }),
-                        new docx.Paragraph({ text: "" }),
-                        new docx.Paragraph({
-                            children: [new docx.TextRun({ text: "Chỉ số chất lượng:", bold: true })],
-                        }),
-                        new docx.Paragraph({
-                            children: [new docx.TextRun({ text: `- Điểm chất lượng tổng thể: ${lastAppraisalData.quality_score}/100 (${lastAppraisalData.status_label})` })],
-                        }),
-                        new docx.Paragraph({
-                            children: [new docx.TextRun({ text: `- Nguy cơ đạo văn: ${lastAppraisalData.plagiarism_risk}%` })],
-                        }),
-                        new docx.Paragraph({
-                            children: [new docx.TextRun({ text: `- Nguy cơ AI: ${lastAppraisalData.ai_risk}%` })],
-                        }),
-                        new docx.Paragraph({ text: "" }),
-                        new docx.Paragraph({
-                            children: [new docx.TextRun({ text: "Chi tiết điểm số (thang điểm 10):", bold: true })],
-                        }),
-                        new docx.Paragraph({
-                            children: [new docx.TextRun({ text: `- Tính khoa học: ${lastAppraisalData.criteria.scientific}/10` })],
-                        }),
-                        new docx.Paragraph({
-                            children: [new docx.TextRun({ text: `- Tính thực tiễn: ${lastAppraisalData.criteria.practical}/10` })],
-                        }),
-                        new docx.Paragraph({
-                            children: [new docx.TextRun({ text: `- Tính mới/sáng tạo: ${lastAppraisalData.criteria.innovation}/10` })],
-                        }),
-                        new docx.Paragraph({
-                            children: [new docx.TextRun({ text: `- Khả năng áp dụng: ${lastAppraisalData.criteria.applied_ability}/10` })],
-                        }),
-                        new docx.Paragraph({
-                            children: [new docx.TextRun({ text: `- Hiệu quả minh chứng: ${lastAppraisalData.criteria.demonstrated_effect}/10` })],
-                        }),
-                        new docx.Paragraph({
-                            children: [new docx.TextRun({ text: `- Ngôn ngữ và trình bày: ${lastAppraisalData.criteria.language}/10` })],
-                        }),
-                        new docx.Paragraph({ text: "" }),
-                        new docx.Paragraph({
-                            children: [new docx.TextRun({ text: "Gợi ý cải thiện:", bold: true })],
-                        }),
-                        ...lastAppraisalData.ai_details.suggestions.map(s => new docx.Paragraph({
-                            children: [new docx.TextRun({ text: `• ${s}` })],
-                            bullet: { level: 0 }
-                        })),
-                    ],
-                }],
-            });
-
-            const blob = await docx.Packer.toBlob(doc);
-            saveAs(blob, "Bao_cao_Tham_dinh.docx");
+            if (lastAppraisalData.type === 'SKKN') {
+                await exportSkknAppraisal(lastAppraisalData);
+            } else {
+                await exportBpAppraisal(lastAppraisalData);
+            }
         } catch (error) {
             console.error("Export Error:", error);
-            alert("Lỗi khi xuất file Word.");
+            alert("Lỗi khi xuất file Word: " + error.message);
         }
     });
 
+    async function exportBpAppraisal(data) {
+        const doc = new docx.Document({
+            styles: {
+                default: {
+                    paragraph: {
+                        run: { size: 24, font: "Times New Roman" }
+                    }
+                }
+            },
+            sections: [{
+                properties: {},
+                children: [
+                    new docx.Paragraph({
+                        children: [new docx.TextRun({ text: "BÁO CÁO THẨM ĐỊNH BIỆN PHÁP", bold: true, size: 28 })],
+                        alignment: docx.AlignmentType.CENTER,
+                    }),
+                    new docx.Paragraph({ text: "" }),
+                    new docx.Paragraph({
+                        children: [new docx.TextRun({ text: "Tóm tắt đánh giá:", bold: true })],
+                    }),
+                    new docx.Paragraph({
+                        children: [new docx.TextRun({ text: data.summary })],
+                    }),
+                    new docx.Paragraph({ text: "" }),
+                    new docx.Paragraph({
+                        children: [new docx.TextRun({ text: "Chỉ số chất lượng:", bold: true })],
+                    }),
+                    new docx.Paragraph({
+                        children: [new docx.TextRun({ text: `- Điểm chất lượng tổng thể: ${data.quality_score}/100 (${data.status_label})` })],
+                    }),
+                    new docx.Paragraph({
+                        children: [new docx.TextRun({ text: `- Nguy cơ đạo văn: ${data.plagiarism_risk}%` })],
+                    }),
+                    new docx.Paragraph({
+                        children: [new docx.TextRun({ text: `- Nguy cơ AI: ${data.ai_risk}%` })],
+                    }),
+                    new docx.Paragraph({ text: "" }),
+                    new docx.Paragraph({
+                        children: [new docx.TextRun({ text: "Chi tiết điểm số (thang điểm 10):", bold: true })],
+                    }),
+                    new docx.Paragraph({
+                        children: [new docx.TextRun({ text: `- Tính khoa học: ${data.criteria?.scientific || 0}/10` })],
+                    }),
+                    new docx.Paragraph({
+                        children: [new docx.TextRun({ text: `- Tính thực tiễn: ${data.criteria?.practical || 0}/10` })],
+                    }),
+                    new docx.Paragraph({
+                        children: [new docx.TextRun({ text: `- Tính mới/sáng tạo: ${data.criteria?.innovation || 0}/10` })],
+                    }),
+                    new docx.Paragraph({
+                        children: [new docx.TextRun({ text: `- Khả năng áp dụng: ${data.criteria?.applied_ability || 0}/10` })],
+                    }),
+                    new docx.Paragraph({
+                        children: [new docx.TextRun({ text: `- Hiệu quả minh chứng: ${data.criteria?.demonstrated_effect || 0}/10` })],
+                    }),
+                    new docx.Paragraph({
+                        children: [new docx.TextRun({ text: `- Ngôn ngữ và trình bày: ${data.criteria?.language || 0}/10` })],
+                    }),
+                    new docx.Paragraph({ text: "" }),
+                    new docx.Paragraph({
+                        children: [new docx.TextRun({ text: "Gợi ý cải thiện:", bold: true })],
+                    }),
+                    ...(data.ai_details?.suggestions || []).map(s => new docx.Paragraph({
+                        children: [new docx.TextRun({ text: `• ${s}` })],
+                        bullet: { level: 0 }
+                    })),
+                ],
+            }],
+        });
+
+        const blob = await docx.Packer.toBlob(doc);
+        saveAs(blob, "Ket_qua_tham_dinh_Bien_phap.docx");
+    }
+
+    async function exportSkknAppraisal(data) {
+        const { Table, TableRow, TableCell, Paragraph, TextRun, AlignmentType, WidthType, BorderStyle, Document, Packer } = docx;
+
+        const teacherName = document.getElementById('author-name')?.value || "...";
+        const subject = document.getElementById('subject-name')?.value || "...";
+        const grade = document.getElementById('grade-level')?.value || "...";
+        const className = document.getElementById('class-name')?.value || "...";
+        const topicName = data.topic_name || "...";
+
+        const children = [];
+
+        // Header
+        children.push(new Paragraph({
+            children: [new TextRun({ text: "BIÊN BẢN CHẤM VÀ XÉT DUYỆT SÁNG KIẾN KINH NGHIỆM", bold: true, size: 28 })],
+            alignment: AlignmentType.CENTER,
+            spacing: { after: 400 }
+        }));
+
+        const infoLines = [
+            { l: "Tác giả:", v: teacherName },
+            { l: "Đơn vị:", v: "........................................................................" },
+            { l: "Tên SKKN:", v: topicName },
+            { l: "Môn (lĩnh vực)/ Khối:", v: `${subject} / ${grade} - ${className}` }
+        ];
+
+        infoLines.forEach(line => {
+            children.push(new Paragraph({
+                children: [
+                    new TextRun({ text: line.l + " ", bold: true }),
+                    new TextRun({ text: line.v })
+                ],
+                spacing: { after: 120 }
+            }));
+        });
+
+        // Table
+        const tableRows = [
+            new TableRow({
+                children: [
+                    new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "TT", bold: true })], alignment: AlignmentType.CENTER })], width: { size: 5, unit: WidthType.PERCENTAGE } }),
+                    new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "Nội dung", bold: true })], alignment: AlignmentType.CENTER })], width: { size: 55, unit: WidthType.PERCENTAGE } }),
+                    new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "Điểm", bold: true })], alignment: AlignmentType.CENTER })], width: { size: 10, unit: WidthType.PERCENTAGE } }),
+                    new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "Nhận xét", bold: true })], alignment: AlignmentType.CENTER })], width: { size: 30, unit: WidthType.PERCENTAGE } }),
+                ]
+            })
+        ];
+
+        const criteriaList = data.skkn_20pt || [
+            { tt: "I", content: "Điểm hình thức (2 điểm)", score: "", note: "" },
+            { tt: "1.1", content: "Trình bày đúng quy định (Phông chữ, lề, giãn dòng...)", score: "1.0", note: "" },
+            { tt: "1.2", content: "Bố cục hợp lý (Có đủ các phần Đặt vấn đề, Giải quyết vấn đề, Kết luận...)", score: "1.0", note: "" },
+            { tt: "II", content: "Điểm nội dung (18 điểm)", score: "", note: "" },
+            { tt: "2.1", content: "Đặt vấn đề (Lý do chọn đề tài, mục đích, phạm vi, thực trạng trước áp dụng...)", score: "2.0", note: "" },
+            { tt: "2.2", content: "Giải quyết vấn đề (Nêu tên nội dung giải pháp, mô tả cách làm, tính khoa học, tiến bộ...)", score: "14.0", note: "" },
+            { tt: "2.3", content: "Kết luận và khuyến nghị (Hiệu quả, so sánh số liệu, kiến nghị cụ thể...)", score: "2.0", note: "" }
+        ];
+
+        // Map AI data to these rows if available
+        const mainCriteriaMap = {
+            "I": { score: "", note: "" },
+            "1.1": { score: data.format_score || "1.0", note: "Đạt chuẩn trình bày" },
+            "1.2": { score: data.layout_score || "1.0", note: "Bố cục logic" },
+            "II": { score: "", note: "" },
+            "2.1": { score: data.opening_score || "2.0", note: data.structure_detail?.find(s => s.part.includes("ĐẶT VẤN ĐỀ"))?.pros || "" },
+            "2.2": { score: data.solution_score || "14.0", note: data.structure_detail?.find(s => s.part.includes("GIẢI PHÁP"))?.pros || "" },
+            "2.3": { score: data.conclusion_score || "2.0", note: data.structure_detail?.find(s => s.part.includes("KẾT LUẬN"))?.pros || "" }
+        };
+
+        criteriaList.forEach(c => {
+            const aiData = mainCriteriaMap[c.tt] || { score: c.score, note: c.note };
+            tableRows.push(new TableRow({
+                children: [
+                    new TableCell({ children: [new Paragraph({ text: c.tt, alignment: AlignmentType.CENTER })] }),
+                    new TableCell({ children: [new Paragraph({ text: c.content, bold: c.tt === "I" || c.tt === "II" })] }),
+                    new TableCell({ children: [new Paragraph({ text: aiData.score.toString(), alignment: AlignmentType.CENTER })] }),
+                    new TableCell({ children: [new Paragraph({ text: aiData.note })] }),
+                ]
+            }));
+        });
+
+        tableRows.push(new TableRow({
+            children: [
+                new TableCell({ children: [new Paragraph({ text: "", alignment: AlignmentType.CENTER })] }),
+                new TableCell({ children: [new Paragraph({ text: "TỔNG CỘNG", bold: true })] }),
+                new TableCell({ children: [new Paragraph({ text: data.quality_20pt_total || "20.0", bold: true, alignment: AlignmentType.CENTER })] }),
+                new TableCell({ children: [new Paragraph({ text: "" })] }),
+            ]
+        }));
+
+        children.push(new Table({
+            width: { size: 100, unit: WidthType.PERCENTAGE },
+            rows: tableRows
+        }));
+
+        children.push(new Paragraph({ text: "" }));
+        children.push(new Paragraph({ children: [new TextRun({ text: "Đánh giá chung: ", bold: true }), new TextRun({ text: data.summary })] }));
+        children.push(new Paragraph({ children: [new TextRun({ text: "Xếp loại: ", bold: true }), new TextRun({ text: data.status_label, bold: true, size: 28 })] }));
+        children.push(new Paragraph({ children: [new TextRun({ text: "Ghi chú xếp loại: A (17-20đ), B (14-17đ), C (10-14đ), Không xếp loại (<10đ).", italics: true, size: 20 })] }));
+
+        const doc = new Document({
+            sections: [{ properties: {}, children: children }]
+        });
+
+        const blob = await Packer.toBlob(doc);
+        saveAs(blob, "Bien_ban_Tham_dinh_SKKN.docx");
+    }
+
     let selectedTitle = "";
     let isNewTitle = false;
+
+
+
 
     function showUpgradePlan(title, isNew) {
         selectedTitle = title;
         isNewTitle = isNew;
 
-        const upgradeStepsList = document.getElementById('upgrade-steps-list');
-        const alertAiScore = document.getElementById('alert-ai-score');
-        const upgradePlanView = document.getElementById('upgrade-plan-view');
-
         // Populate steps from appraisal suggestions
         if (lastAppraisalData && lastAppraisalData.ai_details.suggestions) {
-            upgradeStepsList.innerHTML = lastAppraisalData.ai_details.suggestions.map(s => `<li>${s}</li>`).join('');
-            alertAiScore.innerText = lastAppraisalData.ai_risk;
+            if (upgradeStepsList) upgradeStepsList.innerHTML = lastAppraisalData.ai_details.suggestions.map(s => `<li>${s}</li>`).join('');
+            if (alertAiScore) alertAiScore.innerText = lastAppraisalData.ai_risk;
         } else {
-            upgradeStepsList.innerHTML = '<li>Hoàn thiện các nội dung còn thiếu trong báo cáo.</li><li>Nâng cấp ngôn ngữ chuyên môn theo chuẩn GVG.</li>';
-            alertAiScore.innerText = "50";
+            if (upgradeStepsList) upgradeStepsList.innerHTML = '<li>Hoàn thiện các nội dung còn thiếu trong báo cáo.</li><li>Nâng cấp ngôn ngữ chuyên môn theo chuẩn GVG.</li>';
+            if (alertAiScore) alertAiScore.innerText = "50";
         }
 
-        topicAnalysisView.style.display = 'none';
-        // upgradePlanView.style.display = 'flex'; // Removed
+        if (topicAnalysisView) topicAnalysisView.style.display = 'none';
+        if (upgradePlanView) upgradePlanView.style.display = 'flex'; // Ensure it's shown here
     }
 
-    document.getElementById('keep-old-topic-btn')?.addEventListener('click', () => {
-        const currentTitle = document.getElementById('topic-title')?.value || "Đề tài hiện tại";
+    if (keepOldTopicBtn) keepOldTopicBtn.addEventListener('click', () => {
+        const currentTitle = topicTitleInput?.value || "Đề tài hiện tại";
         showUpgradePlan(currentTitle, false);
     });
 
-    document.getElementById('close-upgrade-plan')?.addEventListener('click', () => {
-        document.getElementById('upgrade-plan-view').style.display = 'none';
+    if (closeUpgradePlanBtn) closeUpgradePlanBtn.addEventListener('click', () => {
+        if (upgradePlanView) upgradePlanView.style.display = 'none';
     });
 
     // Mini export buttons inside upgrade plan
     document.querySelector('#upgrade-plan-view .mini-export-btn.docx')?.addEventListener('click', () => {
-        document.getElementById('export-appraisal-btn')?.click();
+        if (exportAppraisalBtn) exportAppraisalBtn.click();
     });
 
-    document.getElementById('confirm-upgrade-btn')?.addEventListener('click', async () => {
+    if (confirmUpgradeBtn) confirmUpgradeBtn.addEventListener('click', async () => {
+        const appType = document.querySelector('input[name="appraisal_type"]:checked')?.value || "BIỆN PHÁP";
+
+        // Nhảy về Tab phù hợp (Biện pháp hoặc SKKN)
+        const mode = appType === "SKKN" ? "skkn" : "biên-pháp";
+        const tabBtnSource = Array.from(tabButtons).find(btn => btn.getAttribute('data-mode') === mode);
+        if (tabBtnSource) tabBtnSource.click();
+
+        // Nhảy thẳng đến phần 1. Đặt vấn đề (vì tên đã có/chọn rồi)
+        currentSectionIndex = currentSectionOrder.indexOf('section1');
+        switchSection('section1');
+
         // --- CÁC HÀM BỔ TRỢ LÀM SẠCH DỮ LIỆU ---
         const cleanAiDoc = (text) => {
             if (!text) return "";
-            let cleaned = text.replace(/^(Chào bạn|Dưới đây là|Chào mừng|Đây là|Hệ thống đã|Vâng).*?\n/gi, '');
+            // Thay thế ký tự xuống dòng giả nếu có
+            let cleaned = text.replace(/\\n/g, '\n');
+
+            // LOẠI BỎ CÁC KÝ HIỆU MARKDOWN (*)
+            cleaned = cleaned.replace(/\*\*/g, ''); // Bỏ dấu in đậm **
+            cleaned = cleaned.replace(/^\s*\*\s+/gm, '- '); // Bỏ dấu * đầu dòng, thay bằng dấu -
+            // Một số AI trả về # cho tiêu đề, cũng nên làm sạch
+            cleaned = cleaned.replace(/^#+\s+/gm, '');
+
+            cleaned = cleaned.replace(/^(Chào bạn|Dưới đây là|Chào mừng|Đây là|Hệ thống đã|Vâng).*?\n/gi, '');
             cleaned = cleaned.replace(/ (Chào bạn|Chúc bạn|Nếu cần hỗ trợ).*?$/gi, '');
+
             const startIdx = cleaned.search(/(PHẦN I|I\. ĐẶT VẤN ĐỀ|Đặt vấn đề)/i);
             if (startIdx > -1) cleaned = cleaned.substring(startIdx);
+
             cleaned = cleaned.replace(/(Hy vọng bài viết|Chúc bạn thành công|Nếu cần hỗ trợ thêm).*?$/gi, '');
             return cleaned.trim();
         };
@@ -1496,36 +1654,24 @@ document.addEventListener('DOMContentLoaded', () => {
             return t.trim().substring(0, 150);
         };
 
-        const pageCountStr = document.getElementById('upgrade-page-limit')?.value || "15-20";
-        document.getElementById('upgrade-plan-view').style.display = 'none';
+        const pageCountStr = upgradePageLimitInput?.value || "15-20";
+        if (upgradePlanView) upgradePlanView.style.display = 'none';
 
-        const appType = document.querySelector('input[name="appraisal_type"]:checked')?.value || "BIỆN PHÁP";
-        const feedback = lastAppraisalData?.ai_details.suggestions.join("\n- ") || "";
+        if (writingProgressOverlay) {
+            writingProgressOverlay.style.display = 'flex';
+            if (progressLoadingIcon) progressLoadingIcon.style.display = 'block';
+            if (progressSuccessIcon) progressSuccessIcon.style.display = 'none';
+            if (finishedActions) finishedActions.style.display = 'none';
+            if (progressTitle) progressTitle.innerText = `Đang hoàn thiện ${appType}...`;
+            if (progressStatus) progressStatus.innerText = "AI đang tổng hợp dữ liệu từ file gốc và kết quả thẩm định để tạo bản thảo mới chuyên nghiệp.";
+            if (progressLog) progressLog.innerHTML = "";
+            addLogEntry("Khởi động hệ thống tái cấu trúc văn bản...");
 
-        // Tự động đồng bộ và làm sạch đề tài từ file gốc
-        const tInp = document.getElementById('topic-title');
-        if (tInp && (!tInp.value || tInp.value.includes("CHƯA NHẬP") || tInp.value.length < 5)) {
-            const firstL = lastAppraisedText.split('\n').filter(l => l.trim().length > 20);
-            if (firstL.length > 0) {
-                tInp.value = cleanTopicTitle(firstL[0]);
-            }
+            // Link close button
+            if (closeProgressOverlayBtn) closeProgressOverlayBtn.onclick = () => {
+                if (writingProgressOverlay) writingProgressOverlay.style.display = 'none';
+            };
         }
-
-        document.getElementById('appraisal-results-view').style.display = 'none';
-        document.getElementById('appraisal-upgrade-result-view').style.display = 'block';
-
-        const refinedFullEditor = document.getElementById('refined-full-editor');
-        if (refinedFullEditor) refinedFullEditor.value = `[Hệ thống đang áp dụng kỹ thuật 'Skeleton Reconstruction' để tái cấu trúc lại ${appType} của bạn theo dàn ý chuẩn...]`;
-
-        // if (writingProgressView) { // Removed
-        //     writingProgressView.style.display = 'flex'; // Removed
-        //     progressLoadingIcon.style.display = 'block';
-        //     progressSuccessIcon.style.display = 'none';
-        //     finishedActions.style.display = 'none';
-        //     document.getElementById('writing-back-action').style.display = 'block'; // Ensure back button is shown
-        //     progressTitle.innerText = `Đang viết lại ${appType}...`;
-        //     progressStatus.innerText = "AI đang tổng hợp dữ liệu từ file gốc và kết quả thẩm định để tạo bản thảo mới chuyên nghiệp.";
-        // }
 
         let writingPrompt = "";
         if (appType === 'SKKN') {
@@ -1577,57 +1723,139 @@ PHỤ LỤC (Tài liệu tham khảo & Phiếu khảo sát)
         const stages = [
             "Đang nghiên cứu nội dung thẩm định và yêu cầu của bạn...",
             "Đang thực hiện kỹ thuật 'Skeleton Reconstruction' (Tái cấu trúc khung)...",
-            "Đang ánh xạ dữ liệu file gốc vào dàn ý 6 phần SKKN...",
+            "Đang ánh xạ dữ liệu file gốc vào dàn ý chuẩn...",
             "AI đang triển khai nội dung chi tiết cho từng đề mục...",
             "Đang mở rộng các giải pháp sư phạm và dẫn chứng chi tiết...",
-            "Đang đối soát số liệu và xây dựng bảng biểu hiệu quả...",
             "Đang rà soát văn phong và hoàn thiện tính hàn lâm...",
             "Hệ thống đang thực hiện lọc AI và làm sạch văn bản..."
         ];
+
         let stageIdx = 0;
-        const stageInterval = setInterval(() => {
-            if (progressStatus) {
-                progressStatus.innerText = stages[stageIdx % stages.length];
+        let progressVal = 5;
+        const progressInterval = setInterval(() => {
+            if (progressVal < 90) {
+                progressVal += Math.random() * 5;
+                if (progressBarFill) progressBarFill.style.width = `${progressVal}%`;
+                if (progressPercent) progressPercent.innerText = `${Math.round(progressVal)}%`;
+                if (progressStatus) progressStatus.innerText = stages[stageIdx % stages.length];
+                addLogEntry(stages[stageIdx % stages.length]);
                 stageIdx++;
             }
-        }, 5000);
+        }, 3000);
 
-        const result = await callGemini(writingPrompt, () => document.getElementById('confirm-upgrade-btn')?.click());
-        clearInterval(stageInterval);
+        const result = await callGemini(writingPrompt, () => confirmUpgradeBtn?.click());
+        clearInterval(progressInterval);
 
         if (result.text) {
             const cleanText = cleanAiDoc(result.text.replace(/```markdown/g, '').replace(/```/g, '').trim());
-            if (refinedFullEditor) refinedFullEditor.value = cleanText;
+            // Store result in sections as well for regular view
+            distributeContentToSections(cleanText, appType);
 
             if (progressBarFill) progressBarFill.style.width = `100%`;
             if (progressPercent) progressPercent.innerText = `100%`;
             if (progressLoadingIcon) progressLoadingIcon.style.display = 'none';
             if (progressSuccessIcon) progressSuccessIcon.style.display = 'block';
-            if (progressTitle) progressTitle.innerText = "Hoàn tất viết mới!";
-            if (progressStatus) progressStatus.innerText = `Hệ thống vừa hoàn thành việc viết mới toàn bộ ${appType} của bạn theo đúng dàn ý chuẩn.`;
-            if (finishedActions) {
-                finishedActions.style.display = 'flex';
-                document.getElementById('writing-back-action').style.display = 'none';
-                finishedActions.querySelector('.secondary-btn')?.style.setProperty('display', 'none', 'important');
-            }
-            alert("Chúc mừng! Hệ thống đã hoàn thành việc soạn thảo toàn bộ các mục. Bạn có thể kiểm tra từng phần và xuất file Word.");
+            if (progressTitle) progressTitle.innerText = "Hoàn tất cải thiện!";
+            if (progressStatus) progressStatus.innerText = `Hệ thống đã hoàn thành việc nâng cấp ${appType} của bạn thành phiên bản xuất sắc.`;
+            addLogEntry("Hoàn tất quy trình tái cấu trúc.");
+
+            if (finishedActions) finishedActions.style.display = 'flex';
+
+            if (viewResultBtn) viewResultBtn.onclick = () => {
+                if (writingProgressOverlay) writingProgressOverlay.style.display = 'none';
+                switchSection('section1');
+                currentSectionIndex = currentSectionOrder.indexOf('section1');
+            };
+
+            if (exportAfterUpgradeBtn) exportAfterUpgradeBtn.onclick = () => {
+                const cleanText = cleanAiDoc(result.text.replace(/```markdown/g, '').replace(/```/g, '').trim());
+                exportRefinedDoc(cleanText);
+            };
+
         } else {
             alert("Lỗi viết lại: " + result.error);
-            // if (writingProgressView) writingProgressView.style.display = 'none'; // Removed
+            if (writingProgressOverlay) writingProgressOverlay.style.display = 'none';
         }
     });
 
-    document.getElementById('back-to-appraisal-btn')?.addEventListener('click', () => {
-        document.getElementById('appraisal-upgrade-result-view').style.display = 'none';
-        document.getElementById('appraisal-results-view').style.display = 'block';
+    function addLogEntry(text) {
+        const log = progressLog;
+        if (!log) return;
+        const p = document.createElement('p');
+        p.innerText = `> ${text}`;
+        log.appendChild(p);
+        log.scrollTop = log.scrollHeight;
+    }
+
+    function distributeContentToSections(fullText, type) {
+        // Logic to split the long text into multiple sections
+        // This is a simplified version, ideally it should look for headers
+        const sections = type === 'SKKN' ?
+            ['section1', 'theory', 'section2', 'solution1', 'solution2', 'solution3', 'creativity', 'impact', 'appendix'] :
+            ['section1', 'section2', 'solution1', 'solution2', 'solution3', 'creativity', 'impact'];
+
+        // Try to finding markers for each section
+        const lines = fullText.split('\n');
+        let currentSectionIdx = -1;
+        let sectionContents = {};
+
+        lines.forEach(line => {
+            const l = line.trim().toUpperCase();
+            if (l.includes('PHẦN I') || l.includes('1. ĐẶT VẤN ĐỀ')) currentSectionIdx = 0;
+            else if (l.includes('CƠ SỞ LÝ LUẬN') && type === 'SKKN') currentSectionIdx = 1;
+            else if (l.includes('THỰC TRẠNG')) currentSectionIdx = type === 'SKKN' ? 2 : 1;
+            else if (l.includes('GIẢI PHÁP 1') || l.includes('BIỆN PHÁP 1')) currentSectionIdx = type === 'SKKN' ? 3 : 2;
+            else if (l.includes('GIẢI PHÁP 2') || l.includes('BIỆN PHÁP 2')) currentSectionIdx = type === 'SKKN' ? 4 : 3;
+            else if (l.includes('GIẢI PHÁP 3') || l.includes('BIỆN PHÁP 3')) currentSectionIdx = type === 'SKKN' ? 5 : 4;
+            else if (l.includes('TÍNH MỚI') || l.includes('HIỆU QUẢ SKKN')) currentSectionIdx = type === 'SKKN' ? 6 : 5;
+            else if (l.includes('KẾT LUẬN')) currentSectionIdx = type === 'SKKN' ? 7 : 6;
+            else if (l.includes('PHỤ LỤC') && type === 'SKKN') currentSectionIdx = 8;
+
+            if (currentSectionIdx >= 0) {
+                const sId = sections[currentSectionIdx];
+                if (!sectionContents[sId]) sectionContents[sId] = [];
+                sectionContents[sId].push(line);
+            }
+        });
+
+        // Update DOM
+        Object.keys(sectionContents).forEach(sId => {
+            const area = document.querySelector(`.editor-area[data-id="${getDataIdFromSectionId(sId)}"]`);
+            if (area) area.innerHTML = formatAiResponse(sectionContents[sId].join('\n'));
+        });
+    }
+
+    function getDataIdFromSectionId(sId) {
+        const map = {
+            'section1': '1',
+            'theory': 'theory',
+            'section2': '2',
+            'solution1': '2.3.1',
+            'solution2': '2.3.2',
+            'solution3': '2.3.3',
+            'creativity': '2.4',
+            'impact': '3',
+            'appendix': 'appendix'
+        };
+        return map[sId] || sId;
+    }
+
+    if (appraisalUpgradeResultView) appraisalUpgradeResultView.addEventListener('click', () => {
+        if (appraisalUpgradeResultView) appraisalUpgradeResultView.style.display = 'none';
+        if (appraisalResultsView) appraisalResultsView.style.display = 'block';
     });
 
-    document.getElementById('export-refined-docx-btn')?.addEventListener('click', async () => {
-        const content = document.getElementById('refined-full-editor')?.value;
+    if (exportRefinedDocxBtn) exportRefinedDocxBtn.addEventListener('click', () => {
+        const content = refinedFullEditor?.value;
+        if (!content) return alert("Không có nội dung để xuất.");
+        exportRefinedDoc(content);
+    });
+
+    async function exportRefinedDoc(content) {
         if (!content) return alert("Không có nội dung để xuất.");
 
         // Get info from main form to build cover page
-        const topic = document.getElementById('topic-title')?.value || "TÊN ĐỀ TÀI CHƯA NHẬP";
+        const topic = topicTitleInput?.value || "TÊN ĐỀ TÀI CHƯA NHẬP";
         const author = document.getElementById('author-name')?.value || "Người thực hiện";
         const school = document.getElementById('school-name')?.value || "Tên Trường";
         const subject = document.getElementById('subject-name')?.value || "";
@@ -1635,8 +1863,9 @@ PHỤ LỤC (Tài liệu tham khảo & Phiếu khảo sát)
         const className = document.getElementById('class-name')?.value || "";
         const time = document.getElementById('execution-time')?.value || "";
 
-        const btn = document.getElementById('export-refined-docx-btn');
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ĐANG XUẤT WORD...';
+        const btn = exportAfterUpgradeBtn || exportRefinedDocxBtn;
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ĐANG XUẤT...';
         btn.disabled = true;
 
         try {
@@ -1701,20 +1930,35 @@ PHỤ LỤC (Tài liệu tham khảo & Phiếu khảo sát)
             children.push(new Paragraph({ children: [new PageBreak()] }));
 
             // --- REFINED CONTENT ---
-            const mainContentLines = content.split('\n').filter(p => p.trim() !== "");
+            // Clean up literal \n if they still exist
+            const processedContent = content.replace(/\\n/g, '\n');
+            const mainContentLines = processedContent.split('\n');
+
             mainContentLines.forEach(line => {
-                const isHeading = line.trim() === line.trim().toUpperCase() && line.length > 5;
-                const isPoint = line.trim().match(/^[0-9]\.|^Mục|^Phần/);
+                const trimmed = line.trim();
+                if (!trimmed) return; // Skip empty lines, handled by spacing
+
+                // Sưu tầm logic nhận diện tiêu đề chuyên sâu hơn
+                const isMainPart = trimmed.match(/^(PHẦN|I\.|II\.|III\.|IV\.|V\.|VI\.)\s/i);
+                const isSubHeading = trimmed.match(/^[1-9]\.[1-9]/); // 1.1, 2.1...
+                const isAllCap = trimmed === trimmed.toUpperCase() && trimmed.length > 10;
+
+                const isHeading = isMainPart || isSubHeading || isAllCap;
 
                 children.push(new Paragraph({
                     children: [new TextRun({
-                        text: line.trim(),
-                        size: (isHeading || isPoint) ? 32 : 28, // Heading 16, Body 14
-                        bold: (isHeading || isPoint),
+                        text: trimmed,
+                        size: isMainPart ? 30 : (isSubHeading || isAllCap) ? 28 : 26, // Cỡ chữ phù hợp GVG
+                        bold: isHeading,
                         font: "Times New Roman"
                     })],
-                    spacing: { before: 150, after: 150, line: 360 }, // Giãn dòng 1.5
-                    alignment: AlignmentType.JUSTIFIED
+                    spacing: {
+                        before: isHeading ? 240 : 0,
+                        after: 120,
+                        line: 360 // Giãn dòng 1.5
+                    },
+                    alignment: isHeading ? AlignmentType.LEFT : AlignmentType.JUSTIFIED,
+                    indent: isHeading ? {} : { firstLine: 700 } // Thụt đầu dòng đoạn văn
                 }));
             });
 
@@ -1733,25 +1977,21 @@ PHỤ LỤC (Tài liệu tham khảo & Phiếu khảo sát)
             console.error(error);
             alert("Lỗi khi tạo file Word: " + error.message);
         } finally {
-            btn.innerHTML = '<i class="fas fa-file-word"></i> XUẤT WORD CHỈNH SỬA';
+            btn.innerHTML = originalHTML;
             btn.disabled = false;
         }
-    });
+    }
 
     // Topic Analysis (Image A3) Logic
-    const refineTopicBtn = document.getElementById('refine-topic-btn');
-    const topicAnalysisView = document.getElementById('topic-analysis-view');
-    const closeTopicAnalysis = document.getElementById('close-topic-analysis');
-    const topicSuggestionsList = document.getElementById('topic-suggestions-list');
 
-    refineTopicBtn?.addEventListener('click', async () => {
+    if (refineTopicBtn) refineTopicBtn.addEventListener('click', async () => {
         if (!lastAppraisedText) {
             alert('Vui lòng thẩm định file trước khi sử dụng tính năng này.');
             return;
         }
 
-        topicAnalysisView.style.display = 'flex';
-        topicSuggestionsList.innerHTML = '<div class="loading-suggestions"><i class="fas fa-spinner fa-spin"></i> Đang phân tích đề tài tối ưu từ bài viết của bạn...</div>';
+        if (topicAnalysisView) topicAnalysisView.style.display = 'flex';
+        if (topicSuggestionsList) topicSuggestionsList.innerHTML = '<div class="loading-suggestions"><i class="fas fa-spinner fa-spin"></i> Đang phân tích đề tài tối ưu từ bài viết của bạn...</div>';
 
         const appraisalType = document.querySelector('input[name="appraisal_type"]:checked')?.value || "BIỆN PHÁP";
 
@@ -1778,7 +2018,7 @@ PHỤ LỤC (Tài liệu tham khảo & Phiếu khảo sát)
             const result = await callGemini(prompt, () => refineTopicBtn.click());
 
             if (result.error) {
-                topicSuggestionsList.innerHTML = `
+                if (topicSuggestionsList) topicSuggestionsList.innerHTML = `
                     <div class="loading-suggestions" style="color: #e74c3c;">
                         <i class="fas fa-exclamation-triangle"></i><br><br>
                         ${result.error === 'Chưa cấu hình API Key.' ? 'Chưa có API Key. Vui lòng cấu hình trong menu.' : 'Lỗi: ' + result.error}
@@ -1791,7 +2031,7 @@ PHỤ LỤC (Tài liệu tham khảo & Phiếu khảo sát)
                     const data = robustParseJSON(result.text);
                     if (!data || !data.suggestions) throw new Error("JSON structure invalid");
 
-                    topicSuggestionsList.innerHTML = data.suggestions.map(s => `
+                    if (topicSuggestionsList) topicSuggestionsList.innerHTML = data.suggestions.map(s => `
                         <div class="topic-suggestion-item">
                             <div class="topic-score ${s.score >= 90 ? 'score-high' : 'score-med'}">${s.score}</div>
                             <div class="topic-content">
@@ -1819,21 +2059,55 @@ PHỤ LỤC (Tài liệu tham khảo & Phiếu khảo sát)
                     document.querySelectorAll('.use-topic-btn').forEach(btn => {
                         btn.addEventListener('click', () => {
                             const title = btn.getAttribute('data-title');
+                            if (topicAnalysisView) topicAnalysisView.style.display = 'none';
                             showUpgradePlan(title, true);
                         });
                     });
                 } catch (e) {
                     console.error("JSON Parse Error:", e, jsonText);
-                    topicSuggestionsList.innerHTML = '<div class="loading-suggestions">AI trả về dữ liệu không đúng cấu trúc. Vui lòng thử lại.</div>';
+                    if (topicSuggestionsList) topicSuggestionsList.innerHTML = '<div class="loading-suggestions">AI trả về dữ liệu không đúng cấu trúc. Vui lòng thử lại.</div>';
                 }
             } else {
-                topicSuggestionsList.innerHTML = '<div class="loading-suggestions">Không nhận được phản hồi từ AI.</div>';
+                if (topicSuggestionsList) topicSuggestionsList.innerHTML = '<div class="loading-suggestions">Không nhận được phản hồi từ AI.</div>';
             }
         } catch (error) {
             console.error("Refine Topic Error:", error);
-            topicSuggestionsList.innerHTML = `<div class="loading-suggestions">Lỗi hệ thống: ${error.message}</div>`;
+            if (topicSuggestionsList) topicSuggestionsList.innerHTML = `<div class="loading-suggestions">Lỗi hệ thống: ${error.message}</div>`;
         }
     });
+
+    if (keepOldTopicBtn) keepOldTopicBtn.addEventListener('click', () => {
+        if (topicAnalysisView) topicAnalysisView.style.display = 'none';
+        const currentTitle = topicTitleInput?.value || "Tên đề tài hiện tại";
+        showUpgradePlan(currentTitle, false);
+    });
+
+    if (closeUpgradePlanBtn) closeUpgradePlanBtn.addEventListener('click', () => {
+        if (upgradePlanView) upgradePlanView.style.display = 'none';
+    });
+
+    async function showUpgradePlan(title, isNewTopic) {
+        if (upgradePlanView) upgradePlanView.style.display = 'flex';
+        if (upgradeStepsList) upgradeStepsList.innerHTML = '<li><i class="fas fa-spinner fa-spin"></i> Đang xây dựng lộ trình cải thiện tối ưu...</li>';
+
+        // Update main topic input
+        aiScoreEl.innerText = lastAppraisalData?.ai_risk || 0;
+
+        const prompt = `Bạn là cố vấn cấp cao. Dựa trên file thẩm định và đề tài "${title}", hãy đưa ra đúng 6 bước hành động (Action Plan) để AI nâng cấp bài viết này thành xuất sắc.
+        Trả về JSON: {"steps": ["Bước 1...", "Bước 2...", "Bước 3...", "Bước 4...", "Bước 5...", "Bước 6..."]}`;
+
+        try {
+            const result = await callGemini(prompt, () => showUpgradePlan(title, isNewTopic));
+            if (result.text) {
+                const data = robustParseJSON(result.text);
+                if (data && data.steps) {
+                    stepsList.innerHTML = data.steps.map((s, idx) => `<li><b>${idx + 1}</b> ${s}</li>`).join('');
+                }
+            }
+        } catch (e) {
+            stepsList.innerHTML = '<li>Tải lộ trình thất bại. Bạn có thể nhấn Xác nhận cải thiện ngay.</li>';
+        }
+    }
 
     closeTopicAnalysis?.addEventListener('click', () => {
         topicAnalysisView.style.display = 'none';
@@ -1863,28 +2137,33 @@ PHỤ LỤC (Tài liệu tham khảo & Phiếu khảo sát)
             let prompt = "";
             if (isSkkn) {
                 prompt = `Bạn là chuyên gia thẩm định SÁNG KIẾN KINH NGHIỆM (SKKN) với 20 năm kinh nghiệm. 
-                Hãy ĐỌC KỸ và PHÂN TÍCH nội dung thực tế từ file giáo viên tải lên để thẩm định theo CẤU TRÚC CHUẨN 6 PHẦN.
+                Hãy ĐỌC KỸ và PHÂN TÍCH nội dung thực tế từ file giáo viên tải lên để thẩm định theo CẤU TRÚC PHIẾU CHẤM 20 ĐIỂM.
                 
                 NỘI DUNG: """${fileText.substring(0, 15000)}"""
 
-                YÊU CẦU: Trả về JSON DUY NHẤT (không giải thích thêm).
+                YÊU CẦU: Trả về JSON DUY NHẤT. Tính toán điểm số trên thang 20 cực kỳ chi tiết.
                 JSON STRUCTURE:
                 {
                   "type": "SKKN",
                   "topic_name": "Tên đề tài thực tế trong bài",
-                  "status_label": "Giỏi/Khá/TB/Yếu",
+                  "status_label": "A/B/C/D",
                   "quality_score": 0-100,
+                  "quality_20pt_total": 0-20,
+                  "format_score": 0-1.0,
+                  "layout_score": 0-1.0,
+                  "opening_score": 0-2.0,
+                  "solution_score": 0-14.0,
+                  "conclusion_score": 0-2.0,
                   "summary": "Tóm tắt đánh giá tổng thể (2-3 câu).",
                   "plagiarism_risk": 0-100,
                   "ai_risk": 0-100,
                   "plagiarism_examples": [ { "quote": "đoạn văn trùng", "source": "nguồn" } ],
                   "spell_check": [ { "original": "sai", "corrected": "đúng" } ],
                   "criteria_detail": [
-                    { "name": "1. TÍNH MỚI, SÁNG TẠO", "score": 0, "max": 20, "pros": "...", "cons": "..." },
-                    { "name": "2. KHẢ NĂNG ÁP DỤNG", "score": 0, "max": 20, "pros": "...", "cons": "..." },
-                    { "name": "3. HIỆU QUẢ THỰC TIỄN", "score": 0, "max": 30, "pros": "...", "cons": "..." },
-                    { "name": "4. TÍNH KHOA HỌC SƯ PHẠM", "score": 0, "max": 20, "pros": "...", "cons": "..." },
-                    { "name": "5. PHẠM VI ẢNH HƯỞNG", "score": 0, "max": 10, "pros": "...", "cons": "..." }
+                    { "name": "1. HÌNH THỨC", "score": 0, "max": 2, "pros": "Trình bày đẹp", "cons": "..." },
+                    { "name": "2. ĐẶT VẤN ĐỀ", "score": 0, "max": 2, "pros": "...", "cons": "..." },
+                    { "name": "3. GIẢI QUYẾT VẤN ĐỀ", "score": 0, "max": 14, "pros": "...", "cons": "..." },
+                    { "name": "4. KẾT LUẬN & KIẾN NGHỊ", "score": 0, "max": 2, "pros": "...", "cons": "..." }
                   ],
                   "structure_detail": [
                     { "part": "PHẦN I: ĐẶT VẤN ĐỀ", "status": "GOOD", "pros": "...", "cons": "...", "note": "..." },
@@ -1894,7 +2173,7 @@ PHỤ LỤC (Tài liệu tham khảo & Phiếu khảo sát)
                     { "part": "PHẦN V: HIỆU QUẢ CỦA SKKN", "status": "...", "pros": "...", "cons": "...", "note": "..." },
                     { "part": "PHẦN VI: KẾT LUẬN VÀ KHUYẾN NGHỊ", "status": "...", "pros": "...", "cons": "...", "note": "..." }
                   ],
-                  "expert_advice": "Lời khuyên vàng từ chuyên gia để đạt điểm cao hơn.",
+                  "expert_advice": "Lời khuyên từ chuyên gia.",
                   "ai_details": { "perplexity": 0, "burstiness": 0, "pattern_score": 0, "patterns": [], "suggestions": [] }
                 }`;
             } else {

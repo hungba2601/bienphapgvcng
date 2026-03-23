@@ -681,7 +681,8 @@
                         <div class="header-actions">
                             <button class="secondary-btn" id="export-appraisal-btn"><i class="fas fa-file-word"></i>
                                 XUẤT BÁO CÁO</button>
-                            <button class="primary-btn" id="refine-topic-btn"><i class="fas fa-wand-magic-sparkles"></i>
+                            <button class="primary-btn pulse-effect" id="refine-topic-btn"><i
+                                    class="fas fa-wand-magic-sparkles"></i>
                                 CHỈNH SỬA HOÀN THIỆN</button>
                             <a href="#" id="re-upload-btn" class="re-upload-link">Thẩm định file khác</a>
                         </div>
@@ -1130,6 +1131,43 @@
         <div class="modal-footer"
             style="padding: 1.5rem 2.5rem; background: #f7fafc; border-top: 1px solid #edf2f7; display: flex; justify-content: flex-end;">
             <button class="primary-btn close-guide-modal">ĐÃ HIỂU</button>
+        </div>
+    </div>
+</div>
+
+<!-- Writing Progress Overlay -->
+<div id="writing-progress-overlay" class="progress-overlay" style="display: none;">
+    <div class="progress-card" style="position: relative;">
+        <button id="close-progress-overlay" title="Đóng"
+            style="position: absolute; top: 15px; right: 20px; background: none; border: none; color: #94a3b8; font-size: 1.5rem; cursor: pointer; transition: color 0.3s;"><i
+                class="fas fa-times"></i></button>
+        <div class="progress-header">
+            <div id="progress-loading-icon" class="loading-icon">
+                <i class="fas fa-spinner fa-spin"></i>
+            </div>
+            <div id="progress-success-icon" class="success-icon" style="display: none;">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2 id="progress-title">Đang hoàn thiện báo cáo...</h2>
+        </div>
+        <div class="progress-body">
+            <div class="progress-bar-container">
+                <div id="writing-progress-bar-fill" class="progress-bar-fill" style="width: 0%;"></div>
+            </div>
+            <div class="progress-stats">
+                <span id="writing-progress-percent">0%</span>
+                <span id="writing-progress-status">AI đang phân tích và tái cấu trúc nội dung...</span>
+            </div>
+            <div id="writing-progress-log" class="progress-log">
+                <!-- AI thinking steps will appear here -->
+            </div>
+        </div>
+        <div id="writing-finished-actions" class="progress-footer"
+            style="display: none; gap: 15px; justify-content: center;">
+            <button id="view-result-btn" class="secondary-btn">KIỂM TRA NỘI DUNG</button>
+            <button id="export-after-upgrade-btn" class="primary-btn success-btn">
+                <i class="fas fa-file-word"></i> TẢI FILE (.DOCX) HOÀN CHỈNH
+            </button>
         </div>
     </div>
 </div>

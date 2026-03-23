@@ -2528,3 +2528,440 @@ select:focus {
         transform: translateY(0);
     }
 }
+
+/* --- MODERN ANALYSIS MODALS (A3, A5) --- */
+#topic-analysis-view,
+#upgrade-plan-view {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    z-index: 1500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.analysis-modal {
+    background: #fff;
+    border-radius: 24px;
+    width: 95%;
+    max-width: 900px;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    animation: modalSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+}
+
+@keyframes modalSlideUp {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.analysis-modal-header {
+    background: linear-gradient(135deg, #7c3aed 0%, #6366f1 100%);
+    color: #fff;
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.analysis-modal-header.upgrade-header {
+    background: #fff;
+    color: var(--text-main);
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.target-icon {
+    width: 45px;
+    height: 45px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+}
+
+.close-analysis-btn {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.close-analysis-btn:hover {
+    color: #fff;
+}
+
+.analysis-modal-body {
+    padding: 2rem;
+    overflow-y: auto;
+    background: #f8fafc;
+}
+
+.suggestion-intro {
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.topic-suggestions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.topic-suggestion-item {
+    background: #fff;
+    border-radius: 16px;
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    border: 1px solid #f1f5f9;
+    transition: var(--transition);
+}
+
+.topic-suggestion-item:hover {
+    transform: translateX(5px);
+    border-color: #c4b5fd;
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.05);
+}
+
+.topic-score {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.score-high {
+    background: #f0fdf4;
+    color: #16a34a;
+}
+
+.score-med {
+    background: #fffbeb;
+    color: #d97706;
+}
+
+.topic-content {
+    flex: 1;
+}
+
+.topic-content h4 {
+    font-size: 1.05rem;
+    color: #1e293b;
+    margin-bottom: 4px;
+    line-height: 1.4;
+}
+
+.topic-content p {
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+.topic-item-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.use-topic-btn {
+    padding: 0.6rem 1.2rem !important;
+    font-size: 0.9rem !important;
+    border-radius: 10px !important;
+    white-space: nowrap !important;
+}
+
+.analysis-footer {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+/* --- UPGRADE PLAN (A5) SPECIFIC --- */
+.upgrade-detail-card {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 16px;
+    padding: 2rem;
+}
+
+.upgrade-card-header {
+    font-weight: 700;
+    color: #166534;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.upgrade-steps-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-left: 0;
+}
+
+.upgrade-steps-list li {
+    display: flex;
+    gap: 12px;
+    font-size: 0.95rem;
+    color: #374151;
+    align-items: flex-start;
+}
+
+.upgrade-steps-list li b {
+    background: #dcfce7;
+    color: #16a34a;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.ai-risk-alert {
+    margin-top: 2rem;
+    background: #fff7ed;
+    border: 1px solid #ffedd5;
+    padding: 1.25rem;
+    border-radius: 12px;
+    display: flex;
+    gap: 15px;
+    font-size: 0.9rem;
+    color: #9a3412;
+    line-height: 1.5;
+}
+
+.ai-risk-alert i {
+    font-size: 1.2rem;
+    margin-top: 2px;
+}
+
+.page-limit-setting {
+    margin-top: 1.5rem;
+    background: #fff;
+    padding: 0.8rem 1.2rem;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-weight: 600;
+    border: 1px solid #e2e8f0;
+    font-size: 0.9rem;
+}
+
+.page-limit-setting input {
+    width: 80px;
+    padding: 0.4rem !important;
+    text-align: center;
+}
+
+.upgrade-footer {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.upgrade-footer p {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin-bottom: 1rem;
+}
+
+/* --- WRITING PROGRESS OVERLAY --- */
+.progress-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.98);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(12px);
+}
+
+.progress-card {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 24px;
+    width: 90%;
+    max-width: 600px;
+    padding: 3rem;
+    color: #fff;
+    text-align: center;
+    box-shadow: 0 0 50px rgba(99, 102, 241, 0.2);
+}
+
+.loading-icon {
+    font-size: 4rem;
+    color: #6366f1;
+    margin-bottom: 2rem;
+}
+
+.success-icon {
+    font-size: 4rem;
+    color: #22c55e;
+    margin-bottom: 2rem;
+}
+
+.progress-card h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    letter-spacing: -0.5px;
+}
+
+.progress-bar-container {
+    height: 14px;
+    background: #334155;
+    border-radius: 10px;
+    margin: 2rem 0 1rem;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #6366f1, #818cf8);
+    transition: width 0.4s cubic-bezier(0.1, 0.7, 1, 0.1);
+    width: 0%;
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.5);
+}
+
+.progress-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    font-size: 0.9rem;
+}
+
+.progress-stats span:first-child {
+    font-weight: 800;
+    font-size: 1.2rem;
+    color: #818cf8;
+}
+
+.progress-stats span:last-child {
+    color: #94a3b8;
+}
+
+.progress-log {
+    background: #0f172a;
+    border-radius: 12px;
+    padding: 1.5rem;
+    height: 150px;
+    overflow-y: auto;
+    text-align: left;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 0.85rem;
+    color: #4ade80;
+    border: 1px solid #1e293b;
+    line-height: 1.6;
+}
+
+.progress-log p {
+    margin-bottom: 8px;
+    border-left: 2px solid #334155;
+    padding-left: 10px;
+    opacity: 0;
+    transform: translateX(-10px);
+    animation: logSlideIn 0.3s forwards;
+}
+
+@keyframes logSlideIn {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.progress-footer {
+    margin-top: 2rem;
+    border-top: 1px solid #334155;
+    padding-top: 2rem;
+}
+
+.pulse-effect {
+    animation: pulse 2.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.4);
+    }
+
+    70% {
+        transform: scale(1.03);
+        box-shadow: 0 0 0 20px rgba(124, 58, 237, 0);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(124, 58, 237, 0);
+    }
+}
+
+.mini-export-btn {
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-left: 5px;
+    color: #fff;
+}
+
+.mini-export-btn.docx {
+    background: #2b579a;
+}
+
+.mini-export-btn.pdf {
+    background: #e74c3c;
+}
+
+.export-report-group {
+    font-size: 0.85rem;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+}
