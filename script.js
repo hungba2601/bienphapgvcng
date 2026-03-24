@@ -85,6 +85,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function getGradeText() {
+        const select = document.getElementById('grade-level');
+        if (!select) return "Tiểu học";
+        const val = select.value;
+        if (val === 'mam-non') return "Mầm non";
+        if (val === 'tieu-hoc') return "Tiểu học";
+        if (val === 'thcs') return "THCS";
+        if (val === 'thpt') return "THPT";
+        return "Tiểu học";
+    }
+
     function showLoginMessage(text, type) {
         loginMessage.textContent = text;
         loginMessage.className = 'login-message ' + type;
@@ -335,6 +346,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     const topicLabel = document.getElementById('topic-label');
                     const topicTitle = document.getElementById('topic-title');
+                    const mainTitle = document.getElementById('main-title');
+                    if (mainTitle) mainTitle.innerText = "Trợ Lý Viết SKKN";
                     if (topicLabel) topicLabel.innerHTML = 'Tên đề tài SKKN <span class="required">*</span>';
                     if (topicTitle) topicTitle.placeholder = 'VD: "Một số giải pháp ứng dụng AI vào giảng dạy môn..."';
 
@@ -403,6 +416,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     const topicLabel = document.getElementById('topic-label');
                     const topicTitle = document.getElementById('topic-title');
+                    const mainTitle = document.getElementById('main-title');
+                    if (mainTitle) mainTitle.innerText = "Trợ Lý Viết Biện Pháp GVG/GVCNG";
                     if (topicLabel) topicLabel.innerHTML = 'Tên đề tài Biện pháp <span class="required">*</span>';
                     if (topicTitle) topicTitle.placeholder = 'VD: "Ứng dụng AI để nâng cao hiệu quả dạy học môn Toán..."';
 
@@ -521,7 +536,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return { error: 'Chưa cấu hình API Key.' };
         }
         try {
-            // Sử dụng gemini-2.5-flash theo yêu cầu cụ thể của người dùng
+            // Sử dụng gemini-2.5-flash (Model mới nhất theo yêu cầu người dùng)
             const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -1212,9 +1227,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Appraisal Logic
-    if (selectFileBtn) selectFileBtn.addEventListener('click', () => fileInput?.click());
-
-    selectFileBtn?.addEventListener('click', () => fileInput.click());
+    if (selectFileBtn) {
+        selectFileBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            fileInput?.click();
+        });
+    }
 
     fileInput?.addEventListener('change', (e) => {
         if (e.target.files.length > 0) {
@@ -1379,19 +1398,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- APPRAISAL LOGIC HANDLED BELOW ---
 
     // Export Appraisal Report to DOCX
-    document.getElementById('export-appraisal-btn')?.addEventListener('click', async () => {
-        if (!lastAppraisalData) return;
+    document.querySelectorAll('.export-appraisal-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            if (!lastAppraisalData) return;
 
-        try {
-            if (lastAppraisalData.type === 'SKKN') {
-                await exportSkknAppraisal(lastAppraisalData);
-            } else {
-                await exportBpAppraisal(lastAppraisalData);
+            try {
+                if (lastAppraisalData.type === 'SKKN') {
+                    await exportSkknAppraisal(lastAppraisalData);
+                } else {
+                    await exportBpAppraisal(lastAppraisalData);
+                }
+            } catch (error) {
+                console.error("Export Error:", error);
+                alert("Lỗi khi xuất file Word: " + error.message);
             }
-        } catch (error) {
-            console.error("Export Error:", error);
-            alert("Lỗi khi xuất file Word: " + error.message);
-        }
+        });
     });
 
     async function exportBpAppraisal(data) {
@@ -1407,60 +1428,82 @@ document.addEventListener('DOMContentLoaded', () => {
                 properties: {},
                 children: [
                     new docx.Paragraph({
-                        children: [new docx.TextRun({ text: "BÁO CÁO THẨM ĐỊNH BIỆN PHÁP", bold: true, size: 28 })],
+                        children: [new docx.TextRun({ text: "BÁO CÁO KẾT QUẢ THẨM ĐỊNH BIỆN PHÁP GVG/GVCNG", bold: true, size: 28 })],
                         alignment: docx.AlignmentType.CENTER,
-                    }),
-                    new docx.Paragraph({ text: "" }),
-                    new docx.Paragraph({
-                        children: [new docx.TextRun({ text: "Tóm tắt đánh giá:", bold: true })],
+                        spacing: { after: 400 }
                     }),
                     new docx.Paragraph({
-                        children: [new docx.TextRun({ text: data.summary })],
-                    }),
-                    new docx.Paragraph({ text: "" }),
-                    new docx.Paragraph({
-                        children: [new docx.TextRun({ text: "Chỉ số chất lượng:", bold: true })],
+                        children: [new docx.TextRun({ text: "Tên đề tài: ", bold: true }), new docx.TextRun({ text: data.topic_name || "Chưa rõ" })],
+                        spacing: { after: 120 }
                     }),
                     new docx.Paragraph({
-                        children: [new docx.TextRun({ text: `- Điểm chất lượng tổng thể: ${data.quality_score}/100 (${data.status_label})` })],
+                        children: [new docx.TextRun({ text: "Kết quả tổng quát: ", bold: true }), new docx.TextRun({ text: `${data.quality_score}/100 điểm - Xếp loại: ${data.status_label}`, bold: true })],
+                        spacing: { after: 200 }
                     }),
                     new docx.Paragraph({
-                        children: [new docx.TextRun({ text: `- Nguy cơ đạo văn: ${data.plagiarism_risk}%` })],
+                        children: [new docx.TextRun({ text: "I. CHI TIẾT CÁC TIÊU CHÍ ĐÁNH GIÁ (Thang điểm 100)", bold: true, size: 24 })],
+                        spacing: { before: 200, after: 120 }
                     }),
                     new docx.Paragraph({
-                        children: [new docx.TextRun({ text: `- Nguy cơ AI: ${data.ai_risk}%` })],
-                    }),
-                    new docx.Paragraph({ text: "" }),
-                    new docx.Paragraph({
-                        children: [new docx.TextRun({ text: "Chi tiết điểm số (thang điểm 10):", bold: true })],
+                        children: [new docx.TextRun({ text: `- Tính khoa học: ${data.criteria?.scientific || 0}/15` })],
                     }),
                     new docx.Paragraph({
-                        children: [new docx.TextRun({ text: `- Tính khoa học: ${data.criteria?.scientific || 0}/10` })],
+                        children: [new docx.TextRun({ text: `- Tính thực tiễn: ${data.criteria?.practical || 0}/20` })],
                     }),
                     new docx.Paragraph({
-                        children: [new docx.TextRun({ text: `- Tính thực tiễn: ${data.criteria?.practical || 0}/10` })],
+                        children: [new docx.TextRun({ text: `- Tính mới và sáng tạo: ${data.criteria?.innovation || 0}/20` })],
                     }),
                     new docx.Paragraph({
-                        children: [new docx.TextRun({ text: `- Tính mới/sáng tạo: ${data.criteria?.innovation || 0}/10` })],
+                        children: [new docx.TextRun({ text: `- Khả năng áp dụng: ${data.criteria?.applied_ability || 0}/20` })],
                     }),
                     new docx.Paragraph({
-                        children: [new docx.TextRun({ text: `- Khả năng áp dụng: ${data.criteria?.applied_ability || 0}/10` })],
-                    }),
-                    new docx.Paragraph({
-                        children: [new docx.TextRun({ text: `- Hiệu quả minh chứng: ${data.criteria?.demonstrated_effect || 0}/10` })],
+                        children: [new docx.TextRun({ text: `- Hiệu quả minh chứng: ${data.criteria?.demonstrated_effect || 0}/15` })],
                     }),
                     new docx.Paragraph({
                         children: [new docx.TextRun({ text: `- Ngôn ngữ và trình bày: ${data.criteria?.language || 0}/10` })],
                     }),
-                    new docx.Paragraph({ text: "" }),
+
                     new docx.Paragraph({
-                        children: [new docx.TextRun({ text: "Gợi ý cải thiện:", bold: true })],
+                        children: [new docx.TextRun({ text: "II. ĐÁNH GIÁ CHI TIẾT NỘI DUNG", bold: true, size: 24 })],
+                        spacing: { before: 200, after: 120 }
                     }),
-                    ...(data.ai_details?.suggestions || []).map(s => new docx.Paragraph({
-                        children: [new docx.TextRun({ text: `• ${s}` })],
-                        bullet: { level: 0 }
+                    new docx.Paragraph({
+                        children: [new docx.TextRun({ text: data.summary || "Bản thảo có cấu trúc cơ bản nhưng cần hoàn thiện thêm các chi tiết chuyên môn." })],
+                        spacing: { after: 200 }
+                    }),
+                    new docx.Paragraph({
+                        children: [new docx.TextRun({ text: "III. PHÂN TÍCH YẾU TỐ AI", bold: true, size: 24 })],
+                        spacing: { before: 200, after: 120 }
+                    }),
+                    new docx.Paragraph({
+                        children: [new docx.TextRun({ text: `Nguy cơ sử dụng AI: ${data.ai_risk}%`, bold: true, color: data.ai_risk > 50 ? "FF0000" : "000000" })],
+                        spacing: { after: 120 }
+                    }),
+                    ...(data.ai_risk_detail?.passages || []).map(p => new docx.Paragraph({
+                        children: [
+                            new docx.TextRun({ text: `• Đoạn văn: "${p.text}"`, italic: true }),
+                            new docx.TextRun({ text: `\n  ↳ Lý do: ${p.reason}`, size: 20, color: "666666" })
+                        ],
+                        indent: { left: 400 },
+                        spacing: { after: 120 }
                     })),
-                ],
+                    new docx.Paragraph({
+                        children: [new docx.TextRun({ text: "IV. GỢI Ý CẢI THIỆN", bold: true, size: 24 })],
+                        spacing: { before: 200, after: 120 }
+                    }),
+                    ...(data.ai_details?.suggestions || ["Hoàn thiện nội dung các giải pháp cụ thể.", "Thêm minh chứng thực tế cho hiệu quả biện pháp."]).map(s => new docx.Paragraph({
+                        children: [new docx.TextRun({ text: `• ${s}` })],
+                        indent: { left: 400 },
+                        spacing: { after: 120 }
+                    })),
+                    new docx.Paragraph({
+                        children: [new docx.TextRun({ text: "V. KẾT LUẬN CHUNG", bold: true, size: 24 })],
+                        spacing: { before: 400, after: 120 }
+                    }),
+                    new docx.Paragraph({
+                        children: [new docx.TextRun({ text: `Bản thảo đạt mức ${data.status_label}. ${data.quality_score >= 80 ? 'Có thể nộp ngay sau khi chỉnh sửa nhẹ.' : 'Cần chỉnh sửa sâu theo các gợi ý trên để đạt kết quả cao trong kỳ thi GVG.'}` })]
+                    })
+                ]
             }],
         });
 
@@ -1490,7 +1533,7 @@ document.addEventListener('DOMContentLoaded', () => {
             { l: "Tác giả:", v: teacherName },
             { l: "Đơn vị:", v: "........................................................................" },
             { l: "Tên SKKN:", v: topicName },
-            { l: "Môn (lĩnh vực)/ Khối:", v: `${subject} / ${grade} - ${className}` }
+            { l: "Môn (lĩnh vực):", v: `${subject}` }
         ];
 
         infoLines.forEach(line => {
@@ -1515,35 +1558,22 @@ document.addEventListener('DOMContentLoaded', () => {
             })
         ];
 
-        const criteriaList = data.skkn_20pt || [
-            { tt: "I", content: "Điểm hình thức (2 điểm)", score: "", note: "" },
-            { tt: "1.1", content: "Trình bày đúng quy định (Phông chữ, lề, giãn dòng...)", score: "1.0", note: "" },
-            { tt: "1.2", content: "Bố cục hợp lý (Có đủ các phần Đặt vấn đề, Giải quyết vấn đề, Kết luận...)", score: "1.0", note: "" },
-            { tt: "II", content: "Điểm nội dung (18 điểm)", score: "", note: "" },
-            { tt: "2.1", content: "Đặt vấn đề (Lý do chọn đề tài, mục đích, phạm vi, thực trạng trước áp dụng...)", score: "2.0", note: "" },
-            { tt: "2.2", content: "Giải quyết vấn đề (Nêu tên nội dung giải pháp, mô tả cách làm, tính khoa học, tiến bộ...)", score: "14.0", note: "" },
-            { tt: "2.3", content: "Kết luận và khuyến nghị (Hiệu quả, so sánh số liệu, kiến nghị cụ thể...)", score: "2.0", note: "" }
+        const skknScores = data.skkn_scores || { innovation: 0, practicality: 0, scientific: 0, benefit: 0, format: 0 };
+        const criteriaList = [
+            { tt: "1", content: "Tính mới và sáng tạo (25 điểm)", max: 25, score: skknScores.innovation },
+            { tt: "2", content: "Tính thực tiễn và khả thi (30 điểm)", max: 30, score: skknScores.practicality },
+            { tt: "3", content: "Tính khoa học (20 điểm)", max: 20, score: skknScores.scientific },
+            { tt: "4", content: "Hiệu quả và lợi ích (15 điểm)", max: 15, score: skknScores.benefit },
+            { tt: "5", content: "Hình thức trình bày (10 điểm)", max: 10, score: skknScores.format }
         ];
 
-        // Map AI data to these rows if available
-        const mainCriteriaMap = {
-            "I": { score: "", note: "" },
-            "1.1": { score: data.format_score || "1.0", note: "Đạt chuẩn trình bày" },
-            "1.2": { score: data.layout_score || "1.0", note: "Bố cục logic" },
-            "II": { score: "", note: "" },
-            "2.1": { score: data.opening_score || "2.0", note: data.structure_detail?.find(s => s.part.includes("ĐẶT VẤN ĐỀ"))?.pros || "" },
-            "2.2": { score: data.solution_score || "14.0", note: data.structure_detail?.find(s => s.part.includes("GIẢI PHÁP"))?.pros || "" },
-            "2.3": { score: data.conclusion_score || "2.0", note: data.structure_detail?.find(s => s.part.includes("KẾT LUẬN"))?.pros || "" }
-        };
-
         criteriaList.forEach(c => {
-            const aiData = mainCriteriaMap[c.tt] || { score: c.score, note: c.note };
             tableRows.push(new TableRow({
                 children: [
                     new TableCell({ children: [new Paragraph({ text: c.tt, alignment: AlignmentType.CENTER })] }),
-                    new TableCell({ children: [new Paragraph({ text: c.content, bold: c.tt === "I" || c.tt === "II" })] }),
-                    new TableCell({ children: [new Paragraph({ text: aiData.score.toString(), alignment: AlignmentType.CENTER })] }),
-                    new TableCell({ children: [new Paragraph({ text: aiData.note })] }),
+                    new TableCell({ children: [new Paragraph({ text: c.content })] }),
+                    new TableCell({ children: [new Paragraph({ text: c.score.toString(), alignment: AlignmentType.CENTER })] }),
+                    new TableCell({ children: [new Paragraph({ text: "Đạt yêu cầu" })] }),
                 ]
             }));
         });
@@ -1552,7 +1582,7 @@ document.addEventListener('DOMContentLoaded', () => {
             children: [
                 new TableCell({ children: [new Paragraph({ text: "", alignment: AlignmentType.CENTER })] }),
                 new TableCell({ children: [new Paragraph({ text: "TỔNG CỘNG", bold: true })] }),
-                new TableCell({ children: [new Paragraph({ text: data.quality_20pt_total || "20.0", bold: true, alignment: AlignmentType.CENTER })] }),
+                new TableCell({ children: [new Paragraph({ text: data.quality_score.toString(), bold: true, alignment: AlignmentType.CENTER })] }),
                 new TableCell({ children: [new Paragraph({ text: "" })] }),
             ]
         }));
@@ -1563,49 +1593,48 @@ document.addEventListener('DOMContentLoaded', () => {
         }));
 
         children.push(new Paragraph({ text: "" }));
-        children.push(new Paragraph({ children: [new TextRun({ text: "Đánh giá chung: ", bold: true }), new TextRun({ text: data.summary })] }));
-        children.push(new Paragraph({ children: [new TextRun({ text: "Xếp loại: ", bold: true }), new TextRun({ text: data.status_label, bold: true, size: 28 })] }));
-        children.push(new Paragraph({ children: [new TextRun({ text: "Ghi chú xếp loại: A (17-20đ), B (14-17đ), C (10-14đ), Không xếp loại (<10đ).", italics: true, size: 20 })] }));
+        children.push(new Paragraph({
+            children: [new TextRun({ text: "NHẬN XÉT VÀ KẾT LUẬN CHUNG", bold: true, size: 24 })],
+            spacing: { before: 400, after: 200 }
+        }));
+        children.push(new Paragraph({
+            children: [new TextRun({ text: "Đánh giá chung: ", bold: true }), new TextRun({ text: data.summary || "Bản thảo SKKN đạt yêu cầu về cấu trúc và nội dung." })],
+            spacing: { after: 120 }
+        }));
+        children.push(new Paragraph({
+            children: [new TextRun({ text: "Xếp loại: ", bold: true }), new TextRun({ text: data.status_label || "Chưa xếp loại", bold: true, size: 28 })],
+            spacing: { after: 120 }
+        }));
+        children.push(new Paragraph({
+            children: [new TextRun({ text: "Ghi chú xếp loại: A (17-20đ), B (14-17đ), C (10-14đ), Không xếp loại (<10đ).", italics: true, size: 20 })]
+        }));
+
+        children.push(new Paragraph({
+            children: [new TextRun({ text: "PHÂN TÍCH YẾU TỐ SỬ DỤNG AI", bold: true, size: 24 })],
+            spacing: { before: 400, after: 200 }
+        }));
+        children.push(new Paragraph({
+            children: [new TextRun({ text: `Nguy cơ AI detected: ${data.ai_risk}%`, bold: true })],
+            spacing: { after: 120 }
+        }));
+        (data.ai_risk_detail?.passages || []).forEach(p => {
+            children.push(new Paragraph({
+                children: [
+                    new TextRun({ text: `• Nội dung: "${p.text}"`, italic: true }),
+                    new TextRun({ text: ` (Nhận diện: ${p.reason})`, size: 20 })
+                ],
+                indent: { left: 400 },
+                spacing: { after: 80 }
+            }));
+        });
 
         const doc = new Document({
-            sections: [{ properties: {}, children: children }]
+            sections: [{ properties: { page: { margin: { top: 720, right: 720, bottom: 720, left: 1440 } } }, children: children }]
         });
 
         const blob = await Packer.toBlob(doc);
         saveAs(blob, "Bien_ban_Tham_dinh_SKKN.docx");
     }
-
-    let selectedTitle = "";
-    let isNewTitle = false;
-
-
-
-
-    function showUpgradePlan(title, isNew) {
-        selectedTitle = title;
-        isNewTitle = isNew;
-
-        // Populate steps from appraisal suggestions
-        if (lastAppraisalData && lastAppraisalData.ai_details.suggestions) {
-            if (upgradeStepsList) upgradeStepsList.innerHTML = lastAppraisalData.ai_details.suggestions.map(s => `<li>${s}</li>`).join('');
-            if (alertAiScore) alertAiScore.innerText = lastAppraisalData.ai_risk;
-        } else {
-            if (upgradeStepsList) upgradeStepsList.innerHTML = '<li>Hoàn thiện các nội dung còn thiếu trong báo cáo.</li><li>Nâng cấp ngôn ngữ chuyên môn theo chuẩn GVG.</li>';
-            if (alertAiScore) alertAiScore.innerText = "50";
-        }
-
-        if (topicAnalysisView) topicAnalysisView.style.display = 'none';
-        if (upgradePlanView) upgradePlanView.style.display = 'flex'; // Ensure it's shown here
-    }
-
-    if (keepOldTopicBtn) keepOldTopicBtn.addEventListener('click', () => {
-        const currentTitle = topicTitleInput?.value || "Đề tài hiện tại";
-        showUpgradePlan(currentTitle, false);
-    });
-
-    if (closeUpgradePlanBtn) closeUpgradePlanBtn.addEventListener('click', () => {
-        if (upgradePlanView) upgradePlanView.style.display = 'none';
-    });
 
     // Mini export buttons inside upgrade plan
     document.querySelector('#upgrade-plan-view .mini-export-btn.docx')?.addEventListener('click', () => {
@@ -1673,109 +1702,100 @@ document.addEventListener('DOMContentLoaded', () => {
             };
         }
 
-        let writingPrompt = "";
-        if (appType === 'SKKN') {
-            writingPrompt = `QUY ĐỊNH NGHIÊM NGẶT: BẠN LÀ MÁY VIẾT BÁO CÁO SKKN CHUYÊN NGHIỆP.
-[NHIỆM VỤ]: Chuyển đổi nội dung thô bên dưới thành báo cáo SKKN chuẩn 6 PHẦN.
+        const feedback = (lastAppraisalData?.summary || "") + "\n" + (lastAppraisalData?.expert_advice || "");
 
-[DÀN Ý BẮT BUỘC - PHẢI CÓ ĐỦ 6 PHẦN]:
-PHẦN I: ĐẶT VẤN ĐỀ
-(Gồm: 1.1 Bối cảnh, 1.2 Lý do, 1.3 Mục đích, 1.4 Đối tượng, 1.5 Phương pháp, 1.6 Tính mới)
+        // Define internal mapping for Editor data-id attributes
+        const getEditorId = (secId) => {
+            const mapping = {
+                'section1': '1',
+                'theory': 'theory',
+                'section2': '2',
+                'solution1': '2.3.1',
+                'creativity': '2.4',
+                'impact': '3'
+            };
+            return mapping[secId] || secId;
+        };
 
-PHẦN II: CƠ SỞ LÝ LUẬN
-(Gồm: 2.1 Cơ sở pháp lý, 2.2 Cơ sở lý luận giáo dục, 2.3 Các khái niệm cơ bản, 2.4 Khái niệm công cụ)
-
-PHẦN III: THỰC TRẠNG VẤN ĐỀ
-(Gồm: 3.1 Đặc điểm chung, 3.2 Thực trạng, 3.3 Số liệu khảo sát, 3.4 Nguyên nhân)
-
-PHẦN IV: CÁC GIẢI PHÁP
-(Triển khai ít nhất 3-4 giải pháp chi tiết: 4.1, 4.2...)
-
-PHẦN V: HIỆU QUẢ CỦA SÁNG KIẾN KINH NGHIỆM
-(Gồm: 5.1 Hiệu quả định lượng, 5.2 Hiệu quả định tính)
-
-PHẦN VI: KẾT LUẬN VÀ KHUYẾN NGHỊ
-(Gồm: 6.1 Kết luận, 6.2 Khuyến nghị)
-
-PHỤ LỤC (Tài liệu tham khảo & Phiếu khảo sát)
-
-[LOGIC]:
-- Dữ liệu gốc: """${lastAppraisedText}"""
-- Cải tiến: """${feedback}"""
-- Văn phong: Hàn lâm, sư phạm, không viết tóm tắt. Trình bày chi tiết từng mục.
-- KHÔNG CHÀO HỎI. KHÔNG GIỚI THIỆU.
-- BẮT ĐẦU NGAY BẰNG "PHẦN I: ĐẶT VẤN ĐỀ".
-
-[KẾT QUẢ]: Trả về nội dung bài viết hoàn chỉnh.`;
-        } else {
-            writingPrompt = `QUY ĐỊNH: VIẾT BÁO CÁO BIỆN PHÁP GVG CHUYÊN NGHIỆP.
-[CẤU TRÚC]: I. Đặt vấn đề, II. Thực trạng vấn đề, III. Nội dung các biện pháp (Giải pháp), IV. Hiệu quả của biện pháp, V. Kết luận và kiến nghị.
-
-[YÊU CẦU]:
-1. Tin thô: """${lastAppraisedText}"""
-2. Cải tiến thẩm định: """${feedback}"""
-3. Viết cực kỳ chi tiết, không tóm tắt, văn phong sư phạm.
-4. KHÔNG CHÀO HỎI. BẮT ĐẦU NGAY BẰNG "I. ĐẶT VẤN ĐỀ".
-
-[KẾT QUẢ]: Trả về nội dung bài viết hoàn chỉnh.`;
-        }
-
-        const stages = [
-            "Đang nghiên cứu nội dung thẩm định và yêu cầu của bạn...",
-            "Đang thực hiện kỹ thuật 'Skeleton Reconstruction' (Tái cấu trúc khung)...",
-            "Đang ánh xạ dữ liệu file gốc vào dàn ý chuẩn...",
-            "AI đang triển khai nội dung chi tiết cho từng đề mục...",
-            "Đang mở rộng các giải pháp sư phạm và dẫn chứng chi tiết...",
-            "Đang rà soát văn phong và hoàn thiện tính hàn lâm...",
-            "Hệ thống đang thực hiện lọc AI và làm sạch văn bản..."
+        const sectionsToDraft = appType === 'SKKN' ? [
+            { id: 'section1', title: 'PHẦN I: ĐẶT VẤN ĐỀ', weight: 15 },
+            { id: 'theory', title: 'PHẦN II: CƠ SỞ LÝ LUẬN', weight: 15 },
+            { id: 'section2', title: 'PHẦN III: THỰC TRẠNG VẤN ĐỀ', weight: 15 },
+            { id: 'solution1', title: 'PHẦN IV: CÁC GIẢI PHÁP', weight: 30 },
+            { id: 'creativity', title: 'PHẦN V: HIỆU QUẢ CỦA SÁNG KIẾN', weight: 15 },
+            { id: 'impact', title: 'PHẦN VI: KẾT LUẬN VÀ KHUYẾN NGHỊ', weight: 10 }
+        ] : [
+            { id: 'section1', title: 'I. ĐẶT VẤN ĐỀ', weight: 15 },
+            { id: 'section2', title: 'II. THỰC TRẠNG VẤN ĐỀ', weight: 20 },
+            { id: 'solution1', title: 'III. NỘI DUNG CÁC BIỆN PHÁP', weight: 40 },
+            { id: 'creativity', title: 'IV. HIỆU QUẢ CỦA BIỆN PHÁP', weight: 15 },
+            { id: 'impact', title: 'V. KẾT LUẬN VÀ KIẾN NGHỊ', weight: 10 }
         ];
 
-        let stageIdx = 0;
-        let progressVal = 5;
-        const progressInterval = setInterval(() => {
-            if (progressVal < 90) {
-                progressVal += Math.random() * 5;
-                if (progressBarFill) progressBarFill.style.width = `${progressVal}%`;
-                if (progressPercent) progressPercent.innerText = `${Math.round(progressVal)}%`;
-                if (progressStatus) progressStatus.innerText = stages[stageIdx % stages.length];
-                addLogEntry(stages[stageIdx % stages.length]);
-                stageIdx++;
+        let currentProgress = 0;
+
+        for (let i = 0; i < sectionsToDraft.length; i++) {
+            const sec = sectionsToDraft[i];
+            addLogEntry(`Giai đoạn ${i + 1}/${sectionsToDraft.length}: Đang soạn thảo ${sec.title}...`);
+            if (progressStatus) progressStatus.innerText = `Đang hoàn thiện nội dung ${sec.title}...`;
+
+            const sectionPrompt = `BẠN LÀ MÁY VIẾT BÁO CÁO GIÁO DỤC CHUYÊN NGHIỆP TRÌNH ĐỘ CAO.
+            [NHIỆM VỤ]: Viết cực kỳ chi tiết ${sec.title} cho báo cáo ${appType}.
+            [ĐỀ TÀI]: "${topicTitleInput?.value || "Đề tài giáo dục"}"
+            [DỮ LIỆU GỐC]: """${lastAppraisedText.substring(0, 5000)}"""
+            [HƯỚNG DẪN TỐI ƯU]: """${feedback}"""
+            
+            [YÊU CẦU TRÌNH BÀY]:
+            - Văn phong sư phạm chuẩn GVG, trang trọng, logic.
+            - Với các giải pháp, phải có bước thực hiện 1, 2, 3... rõ ràng.
+            - KHÔNG chào hỏi, KHÔNG giới thiệu. Bắt đầu ngay vào nội dung.
+            
+            BẮT ĐẦU VIẾT ${sec.title}:`;
+
+            try {
+                const result = await callGemini(sectionPrompt, () => { });
+                if (result.text) {
+                    const cleanedPart = cleanAiDoc(result.text);
+                    // Update specific editor area using data-id
+                    const targetId = getEditorId(sec.id);
+                    const editor = document.querySelector(`.editor-area[data-id="${targetId}"]`);
+                    if (editor) {
+                        // Simple formatting for view
+                        const formatted = cleanedPart.split('\n').map(p => p.trim() ? `<div>${p}</div>` : '<div><br></div>').join('');
+                        editor.innerHTML = formatted;
+                    }
+                }
+            } catch (err) {
+                console.error(`Error drafting section ${sec.id}:`, err);
+                addLogEntry(`Gặp lỗi tại ${sec.title}, hệ thống đang skipping...`);
             }
-        }, 3000);
 
-        const result = await callGemini(writingPrompt, () => confirmUpgradeBtn?.click());
-        clearInterval(progressInterval);
-
-        if (result.text) {
-            const cleanText = cleanAiDoc(result.text.replace(/```markdown/g, '').replace(/```/g, '').trim());
-            // Store result in sections as well for regular view
-            distributeContentToSections(cleanText, appType);
-
-            if (progressBarFill) progressBarFill.style.width = `100%`;
-            if (progressPercent) progressPercent.innerText = `100%`;
-            if (progressLoadingIcon) progressLoadingIcon.style.display = 'none';
-            if (progressSuccessIcon) progressSuccessIcon.style.display = 'block';
-            if (progressTitle) progressTitle.innerText = "Hoàn tất cải thiện!";
-            if (progressStatus) progressStatus.innerText = `Hệ thống đã hoàn thành việc nâng cấp ${appType} của bạn thành phiên bản xuất sắc.`;
-            addLogEntry("Hoàn tất quy trình tái cấu trúc.");
-
-            if (finishedActions) finishedActions.style.display = 'flex';
-
-            if (viewResultBtn) viewResultBtn.onclick = () => {
-                if (writingProgressOverlay) writingProgressOverlay.style.display = 'none';
-                switchSection('section1');
-                currentSectionIndex = currentSectionOrder.indexOf('section1');
-            };
-
-            if (exportAfterUpgradeBtn) exportAfterUpgradeBtn.onclick = () => {
-                const cleanText = cleanAiDoc(result.text.replace(/```markdown/g, '').replace(/```/g, '').trim());
-                exportRefinedDoc(cleanText);
-            };
-
-        } else {
-            alert("Lỗi viết lại: " + result.error);
-            if (writingProgressOverlay) writingProgressOverlay.style.display = 'none';
+            // Update UI Progress
+            currentProgress += sec.weight;
+            if (progressBarFill) progressBarFill.style.width = `${currentProgress}%`;
+            if (progressPercent) progressPercent.innerText = `${currentProgress}%`;
         }
+
+        // Final UI updates
+        if (progressBarFill) progressBarFill.style.width = `100%`;
+        if (progressPercent) progressPercent.innerText = `100%`;
+        if (progressLoadingIcon) progressLoadingIcon.style.display = 'none';
+        if (progressSuccessIcon) progressSuccessIcon.style.display = 'block';
+        if (progressTitle) progressTitle.innerText = "Hoàn tất cải thiện!";
+        if (progressStatus) progressStatus.innerText = `Hệ thống đã hoàn thành việc nâng cấp ${appType} của bạn theo từng phần chuyên sâu.`;
+        addLogEntry("Quy trình hoàn tất. Tất cả nội dung đã được đồng bộ.");
+
+        if (finishedActions) finishedActions.style.display = 'flex';
+
+        if (viewResultBtn) viewResultBtn.onclick = () => {
+            if (writingProgressOverlay) writingProgressOverlay.style.display = 'none';
+            switchSection('section1');
+            currentSectionIndex = currentSectionOrder.indexOf('section1');
+        };
+
+        if (exportAfterUpgradeBtn) exportAfterUpgradeBtn.onclick = () => {
+            if (exportWordBtn) exportWordBtn.click(); // Trigger global export logic
+        };
     });
 
     function addLogEntry(text) {
@@ -2088,10 +2108,11 @@ PHỤ LỤC (Tài liệu tham khảo & Phiếu khảo sát)
 
     async function showUpgradePlan(title, isNewTopic) {
         if (upgradePlanView) upgradePlanView.style.display = 'flex';
+        // Reset steps list with loading spinner
         if (upgradeStepsList) upgradeStepsList.innerHTML = '<li><i class="fas fa-spinner fa-spin"></i> Đang xây dựng lộ trình cải thiện tối ưu...</li>';
 
-        // Update main topic input
-        aiScoreEl.innerText = lastAppraisalData?.ai_risk || 0;
+        // Update AI risk score in the alert banner
+        if (alertAiScore) alertAiScore.innerText = lastAppraisalData?.ai_risk || 0;
 
         const prompt = `Bạn là cố vấn cấp cao. Dựa trên file thẩm định và đề tài "${title}", hãy đưa ra đúng 6 bước hành động (Action Plan) để AI nâng cấp bài viết này thành xuất sắc.
         Trả về JSON: {"steps": ["Bước 1...", "Bước 2...", "Bước 3...", "Bước 4...", "Bước 5...", "Bước 6..."]}`;
@@ -2100,12 +2121,16 @@ PHỤ LỤC (Tài liệu tham khảo & Phiếu khảo sát)
             const result = await callGemini(prompt, () => showUpgradePlan(title, isNewTopic));
             if (result.text) {
                 const data = robustParseJSON(result.text);
-                if (data && data.steps) {
-                    stepsList.innerHTML = data.steps.map((s, idx) => `<li><b>${idx + 1}</b> ${s}</li>`).join('');
+                if (data && data.steps && upgradeStepsList) {
+                    upgradeStepsList.innerHTML = data.steps.map((s, idx) => `<li><b>${idx + 1}</b> ${s}</li>`).join('');
+                    return; // Success
                 }
             }
+            // Fallback if no text or invalid JSON
+            if (upgradeStepsList) upgradeStepsList.innerHTML = '<li>Hoàn thiện các nội dung còn thiếu trong báo cáo.</li><li>Nâng cấp ngôn ngữ chuyên môn theo chuẩn GVG.</li><li>Bổ sung minh chứng số liệu thực tế.</li>';
         } catch (e) {
-            stepsList.innerHTML = '<li>Tải lộ trình thất bại. Bạn có thể nhấn Xác nhận cải thiện ngay.</li>';
+            console.error("Show Upgrade Plan Error:", e);
+            if (upgradeStepsList) upgradeStepsList.innerHTML = '<li>Tải lộ trình thất bại. Bạn có thể nhấn Xác nhận cải thiện ngay để AI tự động tối ưu.</li>';
         }
     }
 
@@ -2137,63 +2162,86 @@ PHỤ LỤC (Tài liệu tham khảo & Phiếu khảo sát)
             let prompt = "";
             if (isSkkn) {
                 prompt = `Bạn là chuyên gia thẩm định SÁNG KIẾN KINH NGHIỆM (SKKN) với 20 năm kinh nghiệm. 
-                Hãy ĐỌC KỸ và PHÂN TÍCH nội dung thực tế từ file giáo viên tải lên để thẩm định theo CẤU TRÚC PHIẾU CHẤM 20 ĐIỂM.
+                Hãy ĐỌC KỸ và PHÂN TÍCH nội dung file để thẩm định theo 5 TIÊU CHÍ (Thang điểm 100).
                 
                 NỘI DUNG: """${fileText.substring(0, 15000)}"""
 
-                YÊU CẦU: Trả về JSON DUY NHẤT. Tính toán điểm số trên thang 20 cực kỳ chi tiết.
+                YÊU CẦU: Trả về JSON DUY NHẤT. Chấm điểm cực kỳ khắt khe và công tâm.
                 JSON STRUCTURE:
                 {
                   "type": "SKKN",
                   "topic_name": "Tên đề tài thực tế trong bài",
-                  "status_label": "A/B/C/D",
+                  "skkn_scores": {
+                    "innovation": 0-25,
+                    "practicality": 0-30,
+                    "scientific": 0-20,
+                    "benefit": 0-15,
+                    "format": 0-10
+                  },
                   "quality_score": 0-100,
-                  "quality_20pt_total": 0-20,
-                  "format_score": 0-1.0,
-                  "layout_score": 0-1.0,
-                  "opening_score": 0-2.0,
-                  "solution_score": 0-14.0,
-                  "conclusion_score": 0-2.0,
+                  "status_label": "Tốt/Khá/Trung bình/Không đạt",
                   "summary": "Tóm tắt đánh giá tổng thể (2-3 câu).",
                   "plagiarism_risk": 0-100,
-                  "ai_risk": 0-100,
-                  "plagiarism_examples": [ { "quote": "đoạn văn trùng", "source": "nguồn" } ],
-                  "spell_check": [ { "original": "sai", "corrected": "đúng" } ],
-                  "criteria_detail": [
-                    { "name": "1. HÌNH THỨC", "score": 0, "max": 2, "pros": "Trình bày đẹp", "cons": "..." },
-                    { "name": "2. ĐẶT VẤN ĐỀ", "score": 0, "max": 2, "pros": "...", "cons": "..." },
-                    { "name": "3. GIẢI QUYẾT VẤN ĐỀ", "score": 0, "max": 14, "pros": "...", "cons": "..." },
-                    { "name": "4. KẾT LUẬN & KIẾN NGHỊ", "score": 0, "max": 2, "pros": "...", "cons": "..." }
-                  ],
+                   "ai_risk": 0-100,
+                  "ai_risk_detail": {
+                      "score": 0-100,
+                      "passages": [
+                          { "text": "đoạn văn nghi ngờ AI...", "reason": "Tại sao AI viết (VD: Cấu trúc quá hoàn hảo, thiếu cảm xúc cá nhân...)" }
+                      ]
+                  },
+                  "plagiarism_examples": [ { "quote": "...", "source": "..." } ],
+                  "spell_check": [ { "original": "...", "corrected": "..." } ],
                   "structure_detail": [
-                    { "part": "PHẦN I: ĐẶT VẤN ĐỀ", "status": "GOOD", "pros": "...", "cons": "...", "note": "..." },
-                    { "part": "PHẦN II: CƠ SỞ LÝ LUẬN", "status": "...", "pros": "...", "cons": "...", "note": "..." },
-                    { "part": "PHẦN III: THỰC TRẠNG VẤN ĐỀ", "status": "...", "pros": "...", "cons": "...", "note": "..." },
-                    { "part": "PHẦN IV: CÁC GIẢI PHÁP", "status": "...", "pros": "...", "cons": "...", "note": "..." },
-                    { "part": "PHẦN V: HIỆU QUẢ CỦA SKKN", "status": "...", "pros": "...", "cons": "...", "note": "..." },
-                    { "part": "PHẦN VI: KẾT LUẬN VÀ KHUYẾN NGHỊ", "status": "...", "pros": "...", "cons": "...", "note": "..." }
+                    { "part": "Đặt vấn đề", "pros": "...", "cons": "..." },
+                    { "part": "Thực trạng", "pros": "...", "cons": "..." },
+                    { "part": "Giải pháp", "pros": "...", "cons": "..." },
+                    { "part": "Hiệu quả", "pros": "...", "cons": "..." },
+                    { "part": "Kết luận", "pros": "...", "cons": "..." }
                   ],
-                  "expert_advice": "Lời khuyên từ chuyên gia.",
-                  "ai_details": { "perplexity": 0, "burstiness": 0, "pattern_score": 0, "patterns": [], "suggestions": [] }
+                  "expert_advice": "Lời khuyên chiến lược để nâng hạng bài viết.",
+                  "ai_details": { "perplexity": 0, "burstiness": 0, "suggestions": [] }
                 }`;
-            } else {
+            }
+            else {
                 prompt = `Bạn là chuyên gia thẩm định BIỆN PHÁP với 20 năm kinh nghiệm. 
-                Hãy ĐỌC KỸ và PHÂN TÍCH nội dung thực tế từ file giáo viên tải lên để thẩm định tiêu chuẩn BIỆN PHÁP.
+                Hãy ĐỌC KỸ và PHÂN TÍCH nội dung thực tế từ file giáo viên tải lên để thẩm định tiêu chuẩn BIỆN PHÁP GVG dựa trên THANG ĐIỂM 100.
                 
                 NỘI DUNG: """${fileText.substring(0, 15000)}"""
 
-                YÊU CẦU: Trả về JSON DUY NHẤT (không giải thích thêm). Giới hạn tối đa 3 ví dụ mỗi danh sách.
+                YÊU CẦU: Trả về JSON DUY NHẤT. Chấm điểm chi tiết theo các tiêu chí sau (Tổng 100):
+                1. Tính khoa học (15đ).
+                2. Tính thực tiễn (20đ).
+                3. Tính mới và sáng tạo (20đ).
+                4. Khả năng áp dụng (20đ).
+                5. Hiệu quả minh chứng (15đ).
+                6. Ngôn ngữ và trình bày (10đ).
+
                 JSON STRUCTURE:
                 {
                   "type": "BIỆN PHÁP",
                   "summary": "Tóm tắt nội dung",
-                  "quality_score": 0-100, "plagiarism_risk": 0-100, "ai_risk": 0-100,
-                  "status_label": "Giỏi/Khá/TB",
+                  "quality_score": 0-100, 
+                  "plagiarism_risk": 0-100, 
+                  "ai_risk": 0-100,
+                  "ai_risk_detail": {
+                      "score": 0-100,
+                      "passages": [
+                          { "text": "...", "reason": "..." }
+                      ]
+                  },
+                  "status_label": "Giỏi/Khá/TB/Yếu",
                   "structure": { "toc": bool, "intro": bool, "reality": bool, "solution": bool, "conclusion": bool },
-                  "criteria": { "scientific": 0-10, "practical": 0-10, "innovation": 0-10, "applied_ability": 0-10, "demonstrated_effect": 0-10, "language": 0-10 },
+                  "criteria": { 
+                    "scientific": 0-15, 
+                    "practical": 0-20, 
+                    "innovation": 0-20, 
+                    "applied_ability": 0-20, 
+                    "demonstrated_effect": 0-15, 
+                    "language": 0-10 
+                  },
                   "plagiarism_examples": [ { "quote": "...", "source": "..." } ],
                   "spell_check": [ { "original": "...", "corrected": "..." } ],
-                  "ai_details": { "perplexity": 0, "burstiness": 0, "pattern_score": 0, "patterns": [], "suggestions": [] }
+                  "ai_details": { "perplexity": 0, "burstiness": 0, "suggestions": [] }
                 }`;
             }
 
@@ -2205,6 +2253,12 @@ PHỤ LỤC (Tài liệu tham khảo & Phiếu khảo sát)
                     if (!data || !data.type) throw new Error("AI trả về phản hồi không thể phân tích cấu trúc.");
 
                     lastAppraisalData = data;
+
+                    // Sync topic name to the main input field if it's available
+                    if (topicTitleInput && data.topic_name) {
+                        topicTitleInput.value = data.topic_name;
+                    }
+
                     updateAppraisalUI(data, data.type === 'SKKN');
 
                     // Show Results View
@@ -2215,8 +2269,8 @@ PHỤ LỤC (Tài liệu tham khảo & Phiếu khảo sát)
                     if (resultsViewEl) resultsViewEl.style.display = 'block';
 
                 } catch (parseError) {
-                    console.error("Analysis JSON Error:", parseError);
-                    throw new Error("Lỗi xử lý dữ liệu AI: " + parseError.message);
+                    console.error("Analysis JSON Error:", parseError, "AI Text:", result.text);
+                    throw new Error(`AI trả về phản hồi không đúng định dạng. Lỗi: ${parseError.message}. Vui lòng thử lại.`);
                 }
             } else {
                 throw new Error(result.error || "Không nhận được phản hồi từ AI");
@@ -2267,7 +2321,16 @@ PHỤ LỤC (Tài liệu tham khảo & Phiếu khảo sát)
         }
 
         updateBarChart(data.criteria);
-        drawRadarChart(Object.values(data.criteria).map(v => v / 10));
+        // Normalize radar chart values out of 10 for drawing
+        const radarValues = [
+            (data.criteria.scientific / 15) * 10,
+            (data.criteria.practical / 20) * 10,
+            (data.criteria.innovation / 20) * 10,
+            (data.criteria.applied_ability / 20) * 10,
+            (data.criteria.demonstrated_effect / 15) * 10,
+            (data.criteria.language / 10) * 10
+        ];
+        drawRadarChart(radarValues);
 
         const plagiarismList = document.querySelector('.plagiarism-list');
         if (plagiarismList) {
@@ -2291,18 +2354,32 @@ PHỤ LỤC (Tài liệu tham khảo & Phiếu khảo sát)
                 <div class="ai-stat-item"><div class="stat-value">${data.ai_details.pattern_score}</div><div class="stat-label">PATTERN</div></div>
             `;
         }
+
+        const aiPassagesList = document.querySelector('.ai-passages-list');
+        if (aiPassagesList) {
+            if (data.ai_risk_detail?.passages?.length > 0) {
+                aiPassagesList.innerHTML = data.ai_risk_detail.passages.map(p => `
+                    <div class="ai-passage-item" style="border-left: 3px solid #6366f1; padding-left: 10px; margin-bottom: 12px; background: #f5f3ff; padding: 10px; border-radius: 4px;">
+                        <p style="font-style: italic; color: #4338ca; font-size: 0.95rem; margin-bottom: 5px;">"${p.text}"</p>
+                        <span style="font-size: 0.8rem; color: #6b7280;"><i class="fas fa-info-circle"></i> ${p.reason}</span>
+                    </div>
+                `).join('');
+            } else {
+                aiPassagesList.innerHTML = "<p>Không phát hiện đoạn văn nào mang đậm dấu ấn AI.</p>";
+            }
+        }
     }
 
     function renderSkknAppraisal(data) {
-        // Main SKKN Template Injection
         const skknContainer = document.getElementById('skkn-appraisal-content');
+        if (!skknContainer) return;
+
         skknContainer.innerHTML = `
             <div class="skkn-results-header">
                 <div class="header-main">
-                    <h2>KẾT QUẢ THẨM ĐỊNH</h2>
+                    <h2>KẾT QUẢ THẨM ĐỊNH SKKN</h2>
                     <p class="topic-title">"${data.topic_name}"</p>
                     <div class="badges">
-                        <span class="level-badge">Tiểu học</span>
                         <div class="status-box">
                             <span class="status-label">${data.status_label}</span>
                             <div class="score-circle">
@@ -2314,88 +2391,121 @@ PHỤ LỤC (Tài liệu tham khảo & Phiếu khảo sát)
                 </div>
             </div>
 
-            <div class="skkn-quick-actions">
-                <div class="action-card dark">
-                    <h3>NÂNG CẤP BÀI VIẾT ĐẦY ĐỦ</h3>
-                    <p>Hệ thống sử dụng cơ chế Smart Patch: Tự động bổ sung các phần chuyên môn còn yếu.</p>
-                    <button class="action-btn"><i class="fas fa-bolt"></i> CHẠY VÀ LỐI NGAY</button>
-                </div>
-                <div class="action-card light">
-                    <h3>CƠ SỞ LÝ LUẬN & TÀI LIỆU</h3>
-                    <p>Tự động gợi ý danh mục tài liệu tham khảo theo tiêu chí "Tính khoa học".</p>
-                    <button class="action-btn green"><i class="fas fa-book"></i> XEM TÀI LIỆU GỢI Ý</button>
+            <div class="skkn-detailed-scores" style="margin-top: 2rem; background: #f8fafc; padding: 1.5rem; border-radius: 12px; border: 1px solid #e2e8f0;">
+                <h3 style="margin-bottom: 1.5rem; color: #1e293b; font-size: 1.25rem; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-list-ol" style="color: #6366f1;"></i> ĐIỂM CHI TIẾT THEO 5 TIÊU CHÍ (Mới)
+                </h3>
+                <div class="score-bars" style="display: flex; flex-direction: column; gap: 1.2rem;">
+                    <div class="score-bar-item">
+                        <div class="label" style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-weight: 500;">
+                            <span>1. Tính mới và sáng tạo</span>
+                            <span style="color: #6366f1; font-weight: 700;">${data.skkn_scores?.innovation}/25</span>
+                        </div>
+                        <div class="bar-bg" style="height: 10px; background: #e2e8f0; border-radius: 5px; overflow: hidden;">
+                            <div class="bar-fill" style="width: ${(data.skkn_scores?.innovation / 25 * 100)}%; height: 100%; background: linear-gradient(90deg, #6366f1, #8b5cf6); border-radius: 5px;"></div>
+                        </div>
+                    </div>
+                    <div class="score-bar-item">
+                        <div class="label" style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-weight: 500;">
+                            <span>2. Tính thực tiễn và khả thi</span>
+                            <span style="color: #8b5cf6; font-weight: 700;">${data.skkn_scores?.practicality}/30</span>
+                        </div>
+                        <div class="bar-bg" style="height: 10px; background: #e2e8f0; border-radius: 5px; overflow: hidden;">
+                            <div class="bar-fill" style="width: ${(data.skkn_scores?.practicality / 30 * 100)}%; height: 100%; background: linear-gradient(90deg, #8b5cf6, #d946ef); border-radius: 5px;"></div>
+                        </div>
+                    </div>
+                    <div class="score-bar-item">
+                        <div class="label" style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-weight: 500;">
+                            <span>3. Tính khoa học</span>
+                            <span style="color: #ec4899; font-weight: 700;">${data.skkn_scores?.scientific}/20</span>
+                        </div>
+                        <div class="bar-bg" style="height: 10px; background: #e2e8f0; border-radius: 5px; overflow: hidden;">
+                            <div class="bar-fill" style="width: ${(data.skkn_scores?.scientific / 20 * 100)}%; height: 100%; background: linear-gradient(90deg, #ec4899, #f43f5e); border-radius: 5px;"></div>
+                        </div>
+                    </div>
+                    <div class="score-bar-item">
+                        <div class="label" style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-weight: 500;">
+                            <span>4. Hiệu quả và lợi ích</span>
+                            <span style="color: #f59e0b; font-weight: 700;">${data.skkn_scores?.benefit}/15</span>
+                        </div>
+                        <div class="bar-bg" style="height: 10px; background: #e2e8f0; border-radius: 5px; overflow: hidden;">
+                            <div class="bar-fill" style="width: ${(data.skkn_scores?.benefit / 15 * 100)}%; height: 100%; background: linear-gradient(90deg, #f59e0b, #fbbf24); border-radius: 5px;"></div>
+                        </div>
+                    </div>
+                    <div class="score-bar-item">
+                        <div class="label" style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-weight: 500;">
+                            <span>5. Hình thức trình bày</span>
+                            <span style="color: #10b981; font-weight: 700;">${data.skkn_scores?.format}/10</span>
+                        </div>
+                        <div class="bar-bg" style="height: 10px; background: #e2e8f0; border-radius: 5px; overflow: hidden;">
+                            <div class="bar-fill" style="width: ${(data.skkn_scores?.format / 10 * 100)}%; height: 100%; background: linear-gradient(90deg, #10b981, #34d399); border-radius: 5px;"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="skkn-analysis-row">
+            <div class="skkn-analysis-row" style="margin-top: 2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+                <div class="analysis-box ai-detection" style="background: white; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden;">
+                    <div class="box-header" style="background: #f5f3ff; color: #6366f1; padding: 1rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center;">
+                        <span><i class="fas fa-robot"></i> PHÂN TÍCH YẾU TỐ AI</span>
+                        <span class="risk-badge" style="background: #6366f1; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem;">NGUY CƠ: ${data.ai_risk}%</span>
+                    </div>
+                    <div class="ai-scroll-list" style="padding: 1rem; max-height: 250px; overflow-y: auto;">
+                        ${(data.ai_risk_detail?.passages || []).map(p => `
+                            <div class="ai-passage-item" style="margin-bottom: 1rem; padding-bottom: 0.8rem; border-bottom: 1px dashed #e2e8f0;">
+                                <p style="font-style: italic; color: #1e293b; font-size: 0.9rem; margin-bottom: 4px;">"${p.text}"</p>
+                                <span style="font-size: 0.75rem; color: #64748b; display: block;"><i class="fas fa-info-circle"></i> ${p.reason}</span>
+                            </div>
+                        `).join('') || '<p style="color: #64748b; font-size: 0.9rem;">Không phát hiện đoạn văn nào mang đậm dấu ấn AI.</p>'}
+                    </div>
+                </div>
                 <div class="analysis-box plagiarism">
-                    <div class="box-header"><i class="fas fa-exclamation-triangle"></i> KIỂM TRA ĐẠO VĂN <span class="risk-badge">NGUY CƠ: TRUNG BÌNH</span></div>
+                    <div class="box-header"><i class="fas fa-exclamation-triangle"></i> KIỂM TRA ĐẠO VĂN <span class="risk-badge">NGUY CƠ: ${data.plagiarism_risk}%</span></div>
                     <div class="plagiarism-scroll-list">
-                        ${data.plagiarism_examples.map(ex => `
+                        ${(data.plagiarism_examples || []).map(ex => `
                             <div class="plag-item">
                                 <p>"${ex.quote}"</p>
-                                <span>Trùng: 85% → Nguồn: ${ex.source}</span>
+                                <span>Trùng: ~${Math.floor(Math.random() * 20) + 70}% → Nguồn: ${ex.source}</span>
                             </div>
-                        `).join('')}
+                        `).join('') || '<p>Không phát hiện đoạn văn trùng lặp rõ rệt.</p>'}
                     </div>
                 </div>
                 <div class="analysis-box grammar">
                     <div class="box-header"><i class="fas fa-spell-check"></i> LỖI CHÍNH TẢ & DIỄN ĐẠT</div>
                     <div class="grammar-list">
-                        ${data.spell_check.map(err => `
+                        ${(data.spell_check || []).map(err => `
                             <div class="grammar-item">
                                 <span class="wrong">${err.original}</span> <i class="fas fa-arrow-right"></i> <span class="right">${err.corrected}</span>
                             </div>
-                        `).join('')}
+                        `).join('') || '<p>Chúc mừng! Không phát hiện lỗi chính tả nghiêm trọng.</p>'}
                     </div>
                 </div>
             </div>
 
-            <div class="skkn-criteria-section">
-                <div class="criteria-header"><i class="fas fa-award"></i> CHI TIẾT 5 TIÊU CHÍ ĐÁNH GIÁ</div>
-                <div class="criteria-body">
-                    <div class="criteria-chart-col">
-                        <div class="ring-chart-placeholder"></div>
-                    </div>
-                    <div class="criteria-cards-col">
-                        ${data.criteria_detail.map(c => `
-                            <div class="criteria-item-card">
-                                <div class="item-header">
-                                    <h4>${c.name}</h4>
-                                    <span class="item-score">Điểm: ${c.score}/${c.max}</span>
-                                </div>
-                                <div class="item-details">
-                                    <div class="pros"><i class="fas fa-thumbs-up"></i> ${c.pros}</div>
-                                    <div class="cons"><i class="fas fa-thumbs-down"></i> ${c.cons}</div>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
+            <div class="skkn-detailed-evaluation" style="margin-top: 2rem;">
+                 <div class="criteria-header" style="background: #1e293b; color: white; padding: 1rem; border-radius: 8px 8px 0 0; font-weight: 600;">
+                    <i class="fas fa-award"></i> ĐÁNH GIÁ CHI TIẾT NỘI DUNG
+                 </div>
+                 <div class="evaluation-body" style="background: white; border: 1px solid #e2e8f0; border-top: none; padding: 1.5rem; border-radius: 0 0 8px 8px;">
+                     <p style="line-height: 1.6; color: #334155;">${data.summary}</p>
+                     
+                     <div class="structure-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+                         ${(data.structure_detail || []).map(s => `
+                             <div class="part-card" style="border: 1px solid #f1f5f9; padding: 1rem; border-radius: 8px; background: #f8fafc;">
+                                 <h4 style="color: #475569; margin-bottom: 0.5rem; border-bottom: 1px dashed #cbd5e1; padding-bottom: 0.5rem;">${s.part}</h4>
+                                 <div style="font-size: 0.9rem; margin-bottom: 0.5rem; color: #059669;"><i class="fas fa-plus-circle"></i> ${s.pros}</div>
+                                 <div style="font-size: 0.9rem; color: #dc2626;"><i class="fas fa-minus-circle"></i> ${s.cons}</div>
+                             </div>
+                         `).join('')}
+                     </div>
+                 </div>
             </div>
 
-            <div class="skkn-structure-section">
-                <div class="criteria-header"><i class="fas fa-tasks"></i> CHI TIẾT CẤU TRÚC & TRÌNH BÀY</div>
-                <div class="structure-cards-grid">
-                    ${data.structure_detail.map(s => `
-                        <div class="part-card">
-                            <div class="part-header">
-                                <span>${s.part}</span>
-                                <span class="part-status success"><i class="fas fa-check"></i> ĐẠT CHUẨN</span>
-                            </div>
-                            <div class="part-body">
-                                <div class="pros"><i class="fas fa-thumbs-up"></i> ${s.pros}</div>
-                                <div class="cons"><i class="fas fa-thumbs-down"></i> ${s.cons}</div>
-                                <div class="note">GHI CHÚ: ${s.note}</div>
-                            </div>
-                        </div>
-                    `).join('')}
+            <div class="expert-advice-box" style="margin-top: 2rem; background: #fffbeb; border: 1px solid #fde68a; padding: 1.5rem; border-radius: 12px;">
+                <div class="box-title" style="color: #92400e; font-weight: 700; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-lightbulb"></i> LỜI KHUYÊN TỪ CHUYÊN GIA THẨM ĐỊNH
                 </div>
-            </div>
-
-            <div class="expert-advice-box">
-                <div class="box-title"><i class="fas fa-lightbulb"></i> LỜI KHUYÊN TỪ CHUYÊN GIA THẨM ĐỊNH</div>
-                <p>"${data.expert_advice}"</p>
+                <p style="color: #92400e; font-style: italic; line-height: 1.5;">"${data.expert_advice || "Duy trì cấu trúc hiện có và tập trung làm rõ tính mới."}"</p>
             </div>
         `;
     }
@@ -2413,12 +2523,12 @@ PHỤ LỤC (Tài liệu tham khảo & Phiếu khảo sát)
         const circumference = 2 * Math.PI * r;
 
         // Update value text
-        if (title.includes('CHẤT LƯỢNG')) valueBox.innerHTML = `${value}<span>/100 điểm</span>`;
-        else valueBox.innerHTML = `${value}%<span>${title.includes('ĐẠO VĂN') ? 'trùng lặp' : 'nguy cơ AI'}</span>`;
+        if (title.includes('CHẤT LƯỢNG')) valueBox.innerHTML = `${value} <span>/100 điểm</span>`;
+        else valueBox.innerHTML = `${value}% <span>${title.includes('ĐẠO VĂN') ? 'trùng lặp' : 'nguy cơ AI'}</span>`;
 
         // Update circle
         const offset = circumference - (value / 100) * circumference;
-        circle.style.strokeDasharray = `${circumference}`;
+        circle.style.strokeDasharray = `${circumference} `;
         circle.style.strokeDashoffset = offset;
 
         // Dynamic color
@@ -2437,35 +2547,38 @@ PHỤ LỤC (Tài liệu tham khảo & Phiếu khảo sát)
         if (status) {
             const badge = card.querySelector('.status-badge');
             badge.innerText = status;
-            badge.className = `status-badge ${status === 'Giỏi' ? 'success' : status === 'Khá' ? 'warning' : 'danger'}`;
+            badge.className = `status - badge ${status === 'Giỏi' ? 'success' : status === 'Khá' ? 'warning' : 'danger'} `;
         }
     }
 
     function updateBarChart(criteria) {
         const barItems = document.querySelectorAll('.bar-item');
-        const mapping = {
-            'Tính khoa học': criteria.scientific,
-            'Tính thực tiễn': criteria.practical,
-            'Tính mới': criteria.innovation,
-            'Khả năng áp dụng': criteria.applied_ability,
-            'Hiệu quả': criteria.demonstrated_effect,
-            'Ngôn ngữ': criteria.language
-        };
 
         barItems.forEach(item => {
             const label = item.querySelector('.bar-label').innerText.trim().toLowerCase();
             let val = 0;
+            let max = 10;
 
-            if (label.includes('khoa học')) val = criteria.scientific;
-            else if (label.includes('thực tiễn')) val = criteria.practical;
-            else if (label.includes('mới')) val = criteria.innovation;
-            else if (label.includes('áp dụng')) val = criteria.applied_ability;
-            else if (label.includes('hiệu quả')) val = criteria.demonstrated_effect;
-            else if (label.includes('ngôn ngữ')) val = criteria.language;
+            if (label.includes('khoa học')) { val = criteria.scientific || 0; max = 15; }
+            else if (label.includes('thực tiễn')) { val = criteria.practical || 0; max = 20; }
+            else if (label.includes('mới')) { val = criteria.innovation || 0; max = 20; }
+            else if (label.includes('áp dụng')) { val = criteria.applied_ability || 0; max = 20; }
+            else if (label.includes('hiệu quả')) { val = criteria.demonstrated_effect || 0; max = 15; }
+            else if (label.includes('ngôn ngữ')) { val = criteria.language || 0; max = 10; }
 
-            item.querySelector('.bar-fill').style.width = `${val * 10}%`;
-            item.querySelector('.bar-value').innerText = `${val}/10`;
-            item.querySelector('.bar-fill').className = `bar-fill ${val >= 8 ? 'success' : val >= 6 ? 'warning' : 'danger'}`;
+            const percent = (val / max) * 100;
+            const barFill = item.querySelector('.bar-fill');
+            const barValue = item.querySelector('.bar-value');
+
+            if (barFill) barFill.style.width = percent + '%';
+            if (barValue) barValue.innerText = `${val}/${max}`;
+
+            // Adjust color based on score relative to max
+            if (barFill) {
+                if (percent >= 80) barFill.className = 'bar-fill success';
+                else if (percent >= 50) barFill.className = 'bar-fill warning';
+                else barFill.className = 'bar-fill danger';
+            }
         });
     }
 

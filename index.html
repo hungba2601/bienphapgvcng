@@ -50,9 +50,9 @@
         <div class="sidebar-header">
             <div class="logo">
                 <i class="fas fa-magic"></i>
-                <span>BIỆN PHÁP GVG/GVCNG</span>
+                <span>TOOL VIẾT BIỆN PHÁP + SKKN</span>
             </div>
-            <div class="tagline">Trợ lý viết biện pháp GVG/GVCNG chuyên nghiệp</div>
+            <div class="tagline">Trợ lý viết biện pháp & SKKN chuyên nghiệp</div>
         </div>
 
         <nav class="sidebar-nav">
@@ -172,7 +172,7 @@
             <!-- Section: Information (Default) -->
             <div id="info-section" class="content-section active">
                 <div class="section-hero">
-                    <h1>Trợ Lý Viết Biện Pháp GVG/GVCNG</h1>
+                    <h1 id="main-title">Trợ Lý Viết Biện Pháp GVG/GVCNG</h1>
                     <p>Hoàn thành nhanh chóng, đúng chuẩn và tự nhiên</p>
                 </div>
 
@@ -679,7 +679,7 @@
                             <h2>Kết quả Phân tích</h2>
                         </div>
                         <div class="header-actions">
-                            <button class="secondary-btn" id="export-appraisal-btn"><i class="fas fa-file-word"></i>
+                            <button class="secondary-btn export-appraisal-btn"><i class="fas fa-file-word"></i>
                                 XUẤT BÁO CÁO</button>
                             <button class="primary-btn pulse-effect" id="refine-topic-btn"><i
                                     class="fas fa-wand-magic-sparkles"></i>
@@ -874,14 +874,12 @@
                                     </div>
                                 </div>
                                 <div class="ai-patterns">
-                                    <h4>Mẫu câu AI phát hiện:</h4>
-                                    <ul>
-                                        <li>"Trong bối cảnh... hiện nay"</li>
-                                        <li>"Tuy nhiên, thực tế cho thấy"</li>
-                                        <li>"Việc... là vô cùng cần thiết"</li>
-                                        <li>"Đáng chú ý là"</li>
-                                        <li>"Điều này cho thấy rằng"</li>
-                                    </ul>
+                                    <h4>Các đoạn nghi ngờ sử dụng AI:</h4>
+                                    <div class="ai-passages-list">
+                                        <!-- Passages will be injected by JS -->
+                                        <p style="color: #64748b; font-size: 0.9rem;">Hệ thống đang phân tích các đoạn
+                                            văn...</p>
+                                    </div>
                                 </div>
                                 <div class="ai-suggestions">
                                     <h4><i class="far fa-lightbulb"></i> Gợi ý giảm AI:</h4>
@@ -906,7 +904,7 @@
 
                         <div class="results-footer">
                             <div class="action-buttons">
-                                <button class="primary-btn pulse-effect" id="export-appraisal-btn">
+                                <button class="primary-btn pulse-effect export-appraisal-btn">
                                     <i class="fas fa-file-word"></i> TẢI BÁO CÁO THẨM ĐỊNH (.DOCX)
                                 </button>
                                 <button class="ghost-btn" onclick="switchSection('appraisal-upload')">
