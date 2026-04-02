@@ -72,10 +72,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const loginFooter = document.querySelector('.login-footer');
         if (loginFooter) {
             const hwidDisplay = document.createElement('div');
-            hwidDisplay.style.fontSize = '10px';
-            hwidDisplay.style.opacity = '0.6';
-            hwidDisplay.style.marginTop = '10px';
-            hwidDisplay.innerHTML = `Mã máy: <span style="user-select: all; font-weight: bold;">${deviceId}</span>`;
+            hwidDisplay.style.fontSize = '14px';
+            hwidDisplay.style.color = '#0056b3';
+            hwidDisplay.style.fontWeight = '700';
+            hwidDisplay.style.marginTop = '15px';
+            hwidDisplay.style.padding = '10px';
+            hwidDisplay.style.background = '#f0f7ff';
+            hwidDisplay.style.borderRadius = '8px';
+            hwidDisplay.style.border = '1px dashed #0056b3';
+            hwidDisplay.innerHTML = `Mã máy: <span style="user-select: all;">${deviceId}</span>`;
             loginFooter.appendChild(hwidDisplay);
         }
 
@@ -108,18 +113,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            const response = await fetch(`${SHEETS_API_URL}?action=login&user=${encodeURIComponent(user)}&pass=${encodeURIComponent(pass)}&deviceId=${encodeURIComponent(deviceId)}`);
+            // Thêm cache: 'no-cache' và redirect: 'follow' để đảm bảo fetch hoạt động tốt với Google Script
+            const response = await fetch(`${SHEETS_API_URL}?action=login&user=${encodeURIComponent(user)}&pass=${encodeURIComponent(pass)}&deviceId=${encodeURIComponent(deviceId)}`, {
+                method: 'GET',
+                mode: 'cors',
+                cache: 'no-cache',
+                redirect: 'follow'
+            });
 
             if (!response.ok) {
+                console.warn("Server Response Not OK:", response.status, response.statusText);
                 throw new Error('Server trả về lỗi: ' + response.status);
             }
 
             const text = await response.text();
+            console.log("Raw Response from Server:", text);
+            
             let result;
             try {
                 result = JSON.parse(text);
             } catch (e) {
-                console.error("Phản hồi không phải JSON:", text);
+                console.error("JSON Parsing Error. Received text:", text);
                 throw new Error('Dữ liệu từ Google Sheet không đúng định dạng. Hãy kiểm tra lại URL hoặc mã Script.');
             }
 
@@ -149,7 +163,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) {
             console.error("Login Error:", error);
-            showLoginMessage('Lỗi hệ thống: ' + error.message + '. (Hãy chắc chắn chọn "Anyone" khi Deploy bản mới nhất)', 'error');
+            
+            let errorMsg = 'Lỗi hệ thống: ' + error.message;
+            if (error.message === 'Failed to fetch') {
+                errorMsg = 'Lỗi kết nối: Trình duyệt đang chặn yêu cầu. Hãy thử bấm Chuột Phải vào index.html chọn "Open with Live Server" hoặc nộp file lên Hosting/Vercel để chạy.';
+            }
+            
+            showLoginMessage(errorMsg + '. (Hãy chắc chắn chọn "Anyone" khi Deploy bản mới nhất)', 'error');
             loginBtn.disabled = false;
             loginBtn.innerHTML = '<span>ĐĂNG NHẬP NGAY</span><i class="fas fa-sign-in-alt"></i>';
         }
