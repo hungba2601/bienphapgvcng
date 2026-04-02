@@ -10,22 +10,85 @@ document.addEventListener('DOMContentLoaded', () => {
     // Link script.google.com của bạn (Phải cập nhật link này sau khi triển khai Apps Script)
     const SHEETS_API_URL = "https://script.google.com/macros/s/AKfycbyddVGQ6bKUDteLmyU0hoypFVmESKScW-tbuJRU0cQGsn35gLv3gNGjx4hswffqERhs/exec";
 
-    // Kiểm tra và tạo Device ID nếu chưa có
-    let deviceId = localStorage.getItem('deviceId');
-    if (!deviceId) {
-        deviceId = 'dev-' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-        localStorage.setItem('deviceId', deviceId);
+    // --- STABLE DEVICE ID (FINGERPRINT) ---
+    async function getStableDeviceId() {
+        try {
+            const screenInfo = `${screen.width}x${screen.height}x${screen.colorDepth}`;
+            const cpuInfo = navigator.hardwareConcurrency || 'unknown';
+            const memInfo = navigator.deviceMemory || 'unknown';
+            const lang = navigator.language || 'unknown';
+            const platform = navigator.platform || 'unknown';
+            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            
+            // Canvas Fingerprinting: High stability across cache clears
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.textBaseline = "top";
+            ctx.font = "14px 'Arial'";
+            ctx.textBaseline = "alphabetic";
+            ctx.fillStyle = "#f60";
+            ctx.fillRect(125,1,62,20);
+            ctx.fillStyle = "#069";
+            ctx.fillText("gv_assistant_hwid_v1", 2, 15);
+            ctx.fillStyle = "rgba(102, 204, 0, 0.7)";
+            ctx.fillText("gv_assistant_hwid_v1", 4, 17);
+            const canvasData = canvas.toDataURL();
+
+            // WebGL Fingerprinting (if available)
+            let glInfo = "";
+            try {
+                const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                if (gl) {
+                    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+                    glInfo = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+                }
+            } catch (e) {}
+
+            const rawStr = `HWID-V1-${screenInfo}-${cpuInfo}-${memInfo}-${lang}-${platform}-${timezone}-${canvasData.length}-${glInfo}`;
+            
+            // Simple hash function (FNV-1a or similar) to generate a clean string
+            let hash = 0;
+            for (let i = 0; i < rawStr.length; i++) {
+                const char = rawStr.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash; // Convert to 32bit integer
+            }
+            const finalId = 'HWID-' + Math.abs(hash).toString(16).toUpperCase() + '-' + rawStr.length;
+            return finalId;
+        } catch (e) {
+            console.error("Fingerprint error:", e);
+            return 'dev-' + Math.random().toString(36).substring(2, 15);
+        }
     }
 
-    // Kiểm tra trạng thái đã đăng nhập chưa
-    if (localStorage.getItem('isLoggedIn') === 'true') {
-        const savedUser = localStorage.getItem('username') || 'Thành viên';
-        const displayUser = document.getElementById('display-username');
-        if (displayUser) displayUser.textContent = savedUser;
+    let deviceId = "";
+    
+    // Khởi tạo Device ID
+    (async () => {
+        deviceId = await getStableDeviceId();
+        console.log("System Machine ID:", deviceId);
+        
+        // Hiển thị Device ID ở màn hình đăng nhập để dễ quản lý
+        const loginFooter = document.querySelector('.login-footer');
+        if (loginFooter) {
+            const hwidDisplay = document.createElement('div');
+            hwidDisplay.style.fontSize = '10px';
+            hwidDisplay.style.opacity = '0.6';
+            hwidDisplay.style.marginTop = '10px';
+            hwidDisplay.innerHTML = `Mã máy: <span style="user-select: all; font-weight: bold;">${deviceId}</span>`;
+            loginFooter.appendChild(hwidDisplay);
+        }
 
-        loginOverlay.style.display = 'none';
-        appContainer.style.display = 'flex';
-    }
+        // Kiểm tra trạng thái đã đăng nhập chưa
+        if (localStorage.getItem('isLoggedIn') === 'true') {
+            const savedUser = localStorage.getItem('username') || 'Thành viên';
+            const displayUser = document.getElementById('display-username');
+            if (displayUser) displayUser.textContent = savedUser;
+
+            loginOverlay.style.display = 'none';
+            appContainer.style.display = 'flex';
+        }
+    })();
 
     async function handleLogin() {
         const user = loginUsernameInput.value.trim();
@@ -39,6 +102,10 @@ document.addEventListener('DOMContentLoaded', () => {
         loginBtn.disabled = true;
         loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xác thực...';
         showLoginMessage('Đang kết nối hệ thống...', '');
+
+        if (!deviceId) {
+            deviceId = await getStableDeviceId();
+        }
 
         try {
             const response = await fetch(`${SHEETS_API_URL}?action=login&user=${encodeURIComponent(user)}&pass=${encodeURIComponent(pass)}&deviceId=${encodeURIComponent(deviceId)}`);
@@ -57,7 +124,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             if (result.status === 'success') {
-                showLoginMessage('Đăng nhập thành công! Đang vào hệ thống...', 'success');
+                const isNewBinding = result.message && result.message.toLowerCase().includes('đã được gán');
+                const successMsg = isNewBinding ? 'Gắn mã máy thành công! Đang vào hệ thống...' : 'Đăng nhập thành công! Đang vào hệ thống...';
+                
+                showLoginMessage(successMsg, 'success');
                 localStorage.setItem('isLoggedIn', 'true');
                 localStorage.setItem('username', user);
 
