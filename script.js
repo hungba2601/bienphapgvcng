@@ -108,6 +108,10 @@ document.addEventListener('DOMContentLoaded', () => {
         loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xác thực...';
         showLoginMessage('Đang kết nối hệ thống...', '');
 
+        // Ghi chú: Tài khoản (user) sẽ được kiểm tra không phân biệt chữ hoa/thường ở Backend
+        // Mật khẩu (pass) vẫn giữ nguyên tính phân biệt chữ hoa/thường
+
+
         if (!deviceId) {
             deviceId = await getStableDeviceId();
         }
