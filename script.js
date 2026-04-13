@@ -630,8 +630,8 @@ document.addEventListener('DOMContentLoaded', () => {
             return { error: 'Chưa cấu hình API Key.' };
         }
         try {
-            // Sử dụng gemini-2.5-flash (Model mới nhất theo yêu cầu người dùng)
-            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`, {
+            // Sử dụng gemini-3-flash-preview (Model mới nhất theo yêu cầu người dùng)
+            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${key}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
