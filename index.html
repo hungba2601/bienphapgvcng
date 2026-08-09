@@ -1020,11 +1020,36 @@
             <span class="close-modal">&times;</span>
         </div>
         <div class="modal-body">
-            <p>Nhập API Key của bạn để sử dụng mô hình <strong>Gemini 3 Flash Preview</strong> (phiên bản mới nhất hỗ trợ
-                viết biện pháp).</p>
+            <p>Nhập API Key và chọn mô hình AI phù hợp để sử dụng trợ lý viết biện pháp.</p>
             <div class="form-group">
                 <label>Gemini API Key</label>
                 <input type="password" id="gemini-api-key" placeholder="Dán API Key tại đây...">
+            </div>
+            <div class="form-group" style="margin-top: 1.2rem;">
+                <label><i class="fas fa-brain"></i> Chọn Model AI</label>
+                <div class="model-selector" id="model-selector">
+                    <label class="model-option">
+                        <input type="radio" name="ai_model" value="gemini-2.5-flash">
+                        <div class="model-card">
+                            <div class="model-name">Gemini 2.5 Flash</div>
+                            <div class="model-desc">Ổn định, tiết kiệm chi phí</div>
+                        </div>
+                    </label>
+                    <label class="model-option">
+                        <input type="radio" name="ai_model" value="gemini-3.5-flash" checked>
+                        <div class="model-card">
+                            <div class="model-name">Gemini 3.5 Flash <span class="model-badge">Mặc định</span></div>
+                            <div class="model-desc">Cân bằng tốc độ & chất lượng</div>
+                        </div>
+                    </label>
+                    <label class="model-option">
+                        <input type="radio" name="ai_model" value="gemini-3.6-flash">
+                        <div class="model-card">
+                            <div class="model-name">Gemini 3.6 Flash <span class="model-badge new">Mới nhất</span></div>
+                            <div class="model-desc">Mạnh nhất, tối ưu cho viết chuyên sâu</div>
+                        </div>
+                    </label>
+                </div>
             </div>
             <div class="api-status" id="api-status"></div>
         </div>

@@ -602,14 +602,42 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (localStorage.getItem('gemini_api_key')) apiKeyInput.value = localStorage.getItem('gemini_api_key');
-    openApiModalBtn?.addEventListener('click', () => { apiModal.classList.add('active'); apiStatus.innerText = ''; });
+
+    // Khôi phục model đã lưu
+    function restoreSavedModel() {
+        const savedModel = localStorage.getItem('gemini_ai_model') || 'gemini-3.5-flash';
+        const modelRadio = document.querySelector(`input[name="ai_model"][value="${savedModel}"]`);
+        if (modelRadio) modelRadio.checked = true;
+    }
+
+    function getSelectedModel() {
+        return localStorage.getItem('gemini_ai_model') || 'gemini-3.5-flash';
+    }
+
+    function getModelDisplayName(modelId) {
+        const names = {
+            'gemini-2.5-flash': 'Gemini 2.5 Flash',
+            'gemini-3.5-flash': 'Gemini 3.5 Flash',
+            'gemini-3.6-flash': 'Gemini 3.6 Flash'
+        };
+        return names[modelId] || modelId;
+    }
+
+    openApiModalBtn?.addEventListener('click', () => {
+        apiModal.classList.add('active');
+        apiStatus.innerText = '';
+        restoreSavedModel();
+    });
     closeModalBtn?.addEventListener('click', () => apiModal.classList.remove('active'));
     let pendingAction = null;
     saveApiKeyBtn?.addEventListener('click', () => {
         const key = apiKeyInput.value.trim();
         if (key) {
             localStorage.setItem('gemini_api_key', key);
-            apiStatus.innerText = 'Đã lưu API Key thành công!';
+            const selectedModel = document.querySelector('input[name="ai_model"]:checked')?.value || 'gemini-3.5-flash';
+            localStorage.setItem('gemini_ai_model', selectedModel);
+            apiStatus.innerText = `✅ Đã lưu! Model: ${getModelDisplayName(selectedModel)}`;
+            apiStatus.className = 'api-status success';
             setTimeout(() => {
                 apiModal.classList.remove('active');
                 if (pendingAction) {
@@ -621,24 +649,31 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    async function callGemini(prompt, onQuotaError) {
+    async function callGemini(prompt, onQuotaError, jsonMode = false) {
         const key = localStorage.getItem('gemini_api_key');
         if (!key) {
             apiModal.classList.add('active');
             apiStatus.innerText = 'Vui lòng nhập API Key để tiếp tục.';
+            restoreSavedModel();
             if (onQuotaError) pendingAction = onQuotaError;
             return { error: 'Chưa cấu hình API Key.' };
         }
         try {
-            // Sử dụng gemini-3-flash-preview (Model mới nhất theo yêu cầu người dùng)
-            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${key}`, {
+            // Đọc model đã chọn từ localStorage (mặc định: gemini-3.5-flash)
+            const modelId = getSelectedModel();
+            console.log(`[Gemini] Sử dụng model: ${modelId} | JSON mode: ${jsonMode}`);
+
+            const generationConfig = {};
+            if (jsonMode) {
+                generationConfig.responseMimeType = "application/json";
+            }
+
+            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${key}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     contents: [{ parts: [{ text: prompt }] }],
-                    generationConfig: {
-                        responseMimeType: "application/json"
-                    }
+                    generationConfig: generationConfig
                 })
             });
 
@@ -647,6 +682,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (res.status === 429) {
                 apiModal.classList.add('active');
                 apiStatus.innerText = 'Hết hạn mức API. Vui lòng đổi Key khác.';
+                restoreSavedModel();
                 if (onQuotaError) pendingAction = onQuotaError;
                 return { error: 'Hết hạn mức (Quota).' };
             }
@@ -2129,7 +2165,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }`;
 
         try {
-            const result = await callGemini(prompt, () => refineTopicBtn.click());
+            const result = await callGemini(prompt, () => refineTopicBtn.click(), true);
 
             if (result.error) {
                 if (topicSuggestionsList) topicSuggestionsList.innerHTML = `
@@ -2212,7 +2248,7 @@ document.addEventListener('DOMContentLoaded', () => {
         Trả về JSON: {"steps": ["Bước 1...", "Bước 2...", "Bước 3...", "Bước 4...", "Bước 5...", "Bước 6..."]}`;
 
         try {
-            const result = await callGemini(prompt, () => showUpgradePlan(title, isNewTopic));
+            const result = await callGemini(prompt, () => showUpgradePlan(title, isNewTopic), true);
             if (result.text) {
                 const data = robustParseJSON(result.text);
                 if (data && data.steps && upgradeStepsList) {
@@ -2339,7 +2375,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }`;
             }
 
-            const result = await callGemini(prompt, () => startAnalysis(file));
+            const result = await callGemini(prompt, () => startAnalysis(file), true);
 
             if (result.text) {
                 try {
